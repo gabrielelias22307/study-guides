@@ -1,0 +1,2448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🚀 ESCAPE VOLTA — Space Science Adventure</title>
+<style>
+/* ===== RESET ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+/* ===== BODY ===== */
+body{
+  font-family:'Courier New',Courier,monospace;
+  background:#04080f;
+  color:#c8d8f0;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+
+/* ===== STARS BACKGROUND ===== */
+body::before{
+  content:'';
+  position:fixed;
+  top:0;left:0;right:0;bottom:0;
+  background-image:
+    radial-gradient(1px 1px at 10% 20%, #fff 0%, transparent 100%),
+    radial-gradient(1px 1px at 30% 60%, #fff 0%, transparent 100%),
+    radial-gradient(1px 1px at 50% 10%, #adf 0%, transparent 100%),
+    radial-gradient(1px 1px at 70% 80%, #fff 0%, transparent 100%),
+    radial-gradient(1px 1px at 90% 40%, #adf 0%, transparent 100%),
+    radial-gradient(1px 1px at 15% 85%, #fff 0%, transparent 100%),
+    radial-gradient(1px 1px at 55% 50%, #fff 0%, transparent 100%),
+    radial-gradient(1px 1px at 80% 15%, #adf 0%, transparent 100%),
+    radial-gradient(1px 1px at 25% 35%, #fff 0%, transparent 100%),
+    radial-gradient(1px 1px at 65% 70%, #fff 0%, transparent 100%);
+  pointer-events:none;
+  z-index:0;
+  opacity:0.4;
+}
+
+/* ===== HEADER ===== */
+header{
+  background:linear-gradient(135deg,#050d1e 0%,#091528 100%);
+  border-bottom:2px solid #1a4a72;
+  padding:14px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:10px;
+  position:relative;
+  z-index:10;
+  flex-shrink:0;
+}
+.game-title{
+  font-size:1.35rem;
+  font-weight:700;
+  color:#4fc3f7;
+  letter-spacing:4px;
+  text-shadow:0 0 20px rgba(79,195,247,0.6);
+}
+.game-subtitle{font-size:0.68rem;color:#4a7090;letter-spacing:2px;margin-top:3px;}
+.header-right{display:flex;gap:20px;align-items:center;}
+.stat-box{text-align:center;}
+.stat-val{color:#4fc3f7;font-size:1rem;font-weight:700;display:block;}
+.stat-lbl{color:#4a7090;font-size:0.6rem;letter-spacing:1px;display:block;}
+
+/* ===== DANGER BAR ===== */
+.danger-bar{
+  background:linear-gradient(90deg,#160000,#240000);
+  border-bottom:1px solid #4a0000;
+  padding:6px 20px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-size:0.7rem;
+  color:#ff7070;
+  flex-shrink:0;
+  z-index:10;
+  position:relative;
+}
+.blink{animation:blink 1.2s infinite;font-weight:700;letter-spacing:1px;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.15;}}
+.danger-track{flex:1;height:6px;background:#2a0000;border-radius:3px;overflow:hidden;border:1px solid #440000;}
+.danger-fill{
+  height:100%;
+  background:linear-gradient(90deg,#ff4444,#ff8800);
+  border-radius:3px;
+  width:8%;
+  transition:width 0.8s ease;
+}
+
+/* ===== LAYOUT ===== */
+.game-wrap{
+  display:grid;
+  grid-template-columns:1fr 270px;
+  flex:1;
+  overflow:hidden;
+  position:relative;
+  z-index:5;
+}
+
+/* ===== TERMINAL PANEL ===== */
+.terminal-panel{
+  display:flex;
+  flex-direction:column;
+  border-right:2px solid #152840;
+  overflow:hidden;
+}
+#output{
+  flex:1;
+  overflow-y:auto;
+  padding:18px 22px;
+  scroll-behavior:smooth;
+}
+.ln{
+  margin-bottom:3px;
+  line-height:1.65;
+  font-size:0.875rem;
+}
+.ln.room-title{
+  color:#4fc3f7;
+  font-size:0.95rem;
+  font-weight:700;
+  letter-spacing:2px;
+  margin-top:18px;
+  margin-bottom:5px;
+  text-shadow:0 0 12px rgba(79,195,247,0.4);
+}
+.ln.desc{color:#9bb8d4;}
+.ln.cmd-echo{color:#45b775;font-style:italic;}
+.ln.cmd-echo::before{content:'> ';color:#2a8a50;}
+.ln.ok{color:#4ade80;}
+.ln.err{color:#f87171;}
+.ln.warn{color:#fbbf24;}
+.ln.info{color:#67c5f0;}
+.ln.drama{color:#d879f9;font-style:italic;}
+.ln.sep{color:#152840;user-select:none;font-size:0.7rem;}
+.ln.exits{color:#7a9ab8;font-size:0.8rem;margin-top:4px;}
+.ln.item-line{color:#f0c040;font-size:0.8rem;}
+.ln.hint{
+  color:#a78bfa;
+  font-style:italic;
+  background:rgba(167,139,250,0.06);
+  border-left:3px solid #7c3aed;
+  padding:4px 10px;
+  margin:4px 0;
+  border-radius:0 4px 4px 0;
+}
+.hl{font-weight:700;}
+.hl-c{color:#4fc3f7;font-weight:700;}  /* conductor */
+.hl-i{color:#f97316;font-weight:700;}  /* insulator */
+.hl-e{color:#34d399;font-weight:700;}  /* energy */
+.hl-s{color:#fbbf24;font-weight:700;}  /* static */
+.hl-m{color:#f472b6;font-weight:700;}  /* magnet */
+.hl-p{color:#a78bfa;font-weight:700;}  /* power/circuit */
+
+/* ===== INPUT BAR ===== */
+.input-bar{
+  display:flex;
+  align-items:center;
+  border-top:2px solid #152840;
+  background:#060d18;
+  padding:11px 16px;
+  gap:10px;
+  flex-shrink:0;
+}
+.prompt-sym{color:#2a8a50;font-size:1.1rem;font-weight:700;}
+#cmd-in{
+  flex:1;
+  background:transparent;
+  border:none;
+  outline:none;
+  color:#45b775;
+  font-family:'Courier New',monospace;
+  font-size:0.9rem;
+  caret-color:#45b775;
+}
+#cmd-in::placeholder{color:#1a4030;font-style:italic;}
+#cmd-btn{
+  background:#133a5c;
+  color:#4fc3f7;
+  border:1px solid #1e5a8c;
+  border-radius:4px;
+  padding:6px 16px;
+  font-family:inherit;
+  font-size:0.78rem;
+  cursor:pointer;
+  transition:all 0.2s;
+  letter-spacing:1px;
+}
+#cmd-btn:hover{background:#1e5a8c;}
+
+/* ===== SIDEBAR ===== */
+.sidebar{
+  background:#060c16;
+  display:flex;
+  flex-direction:column;
+  overflow-y:auto;
+}
+.sb-section{border-bottom:1px solid #152840;padding:13px 15px;}
+.sb-label{
+  font-size:0.6rem;
+  letter-spacing:2px;
+  color:#3a6080;
+  text-transform:uppercase;
+  margin-bottom:9px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.sb-label::after{content:'';flex:1;height:1px;background:#152840;}
+.room-card{
+  background:#091525;
+  border:1px solid #1a4060;
+  border-radius:6px;
+  padding:11px;
+  text-align:center;
+}
+.room-icon-big{font-size:1.8rem;display:block;margin-bottom:5px;}
+.room-name-sb{color:#4fc3f7;font-size:0.74rem;font-weight:700;letter-spacing:1px;}
+
+/* exits grid */
+.exits-grid{
+  display:grid;
+  grid-template-areas:"n n n" "w c e" "s s s";
+  gap:3px;
+  margin-top:8px;
+}
+.exit-n{grid-area:n;}
+.exit-s{grid-area:s;}
+.exit-w{grid-area:w;}
+.exit-e{grid-area:e;}
+.exit-c{grid-area:c;}
+.exit-cell{
+  height:26px;
+  border-radius:3px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:0.6rem;
+  font-weight:700;
+  letter-spacing:1px;
+}
+.exit-avail{background:#0d2a40;border:1px solid #1e5a8c;color:#4fc3f7;cursor:pointer;}
+.exit-avail:hover{background:#1e3d5c;}
+.exit-none{background:#08111e;color:#152840;}
+.exit-locked{background:#1a0a00;border:1px solid #4a2000;color:#7a4020;font-size:0.55rem;}
+
+/* inventory */
+.inv-list{display:flex;flex-direction:column;gap:3px;max-height:180px;overflow-y:auto;}
+.inv-item{
+  background:#0c1e30;
+  border:1px solid #152840;
+  border-radius:4px;
+  padding:4px 9px;
+  font-size:0.72rem;
+  color:#67c5f0;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.inv-item.worn{border-color:#f97316;color:#fb923c;}
+.inv-empty{color:#253a4c;font-size:0.72rem;font-style:italic;}
+
+/* puzzle tracker */
+.puz-list{display:flex;flex-direction:column;gap:5px;}
+.puz-item{display:flex;align-items:center;gap:8px;font-size:0.7rem;}
+.puz-dot{
+  width:9px;height:9px;border-radius:50%;
+  border:1.5px solid #253a4c;flex-shrink:0;
+  transition:all 0.4s;
+}
+.puz-dot.done{background:#4ade80;border-color:#4ade80;box-shadow:0 0 6px rgba(74,222,128,0.5);}
+.puz-name{color:#4a7090;}
+.puz-name.done{color:#4ade80;text-decoration:line-through;}
+
+/* quick ref */
+.qref{font-size:0.67rem;color:#3a6080;line-height:1.8;}
+.qref span{color:#4a8090;}
+
+/* ===== R/R MODAL ===== */
+.rr-overlay{
+  display:none;
+  position:fixed;
+  top:0;left:0;right:0;bottom:0;
+  background:rgba(0,0,0,0.88);
+  z-index:200;
+  overflow-y:auto;
+  padding:20px 16px;
+  backdrop-filter:blur(4px);
+}
+.rr-overlay.open{display:flex;align-items:flex-start;justify-content:center;}
+.rr-modal{
+  width:100%;
+  max-width:920px;
+  margin:20px auto;
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 24px 60px rgba(0,0,0,0.9);
+  border:1px solid #1a4a72;
+}
+.rr-hdr{
+  background:linear-gradient(135deg,#081522,#0d2040,#081522);
+  border-bottom:2px solid #1a4a72;
+  padding:18px 22px;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+}
+.rr-hdr h2{color:#4fc3f7;font-size:1rem;letter-spacing:2px;margin-bottom:3px;}
+.rr-hdr p{color:#4a7090;font-size:0.75rem;}
+.rr-badge{
+  display:inline-block;
+  background:rgba(79,195,247,0.15);
+  border:1px solid rgba(79,195,247,0.3);
+  border-radius:20px;
+  padding:3px 12px;
+  font-size:0.68rem;
+  color:#4fc3f7;
+  letter-spacing:1px;
+  margin-top:5px;
+}
+.rr-close{
+  background:#133a5c;
+  border:1px solid #1e5a8c;
+  color:#4fc3f7;
+  border-radius:6px;
+  padding:7px 14px;
+  cursor:pointer;
+  font-family:'Courier New',monospace;
+  font-size:0.75rem;
+  transition:all 0.2s;
+  flex-shrink:0;
+  letter-spacing:1px;
+}
+.rr-close:hover{background:#1e5a8c;}
+/* R/R Table */
+.rr-table{width:100%;border-collapse:collapse;background:white;}
+.rr-table thead tr th{
+  padding:11px 18px;
+  font-size:0.8rem;
+  font-weight:700;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  font-family:'Segoe UI',Arial,sans-serif;
+}
+.rr-table thead tr th:first-child{
+  background:#0d1f3a;color:#4fc3f7;
+  width:52%;border-right:2px solid #1a4a72;
+}
+.rr-table thead tr th:last-child{
+  background:#1a1000;color:#fbbf24;
+  width:48%;
+}
+.rr-table tbody tr td{
+  padding:16px 20px;vertical-align:top;
+  border-top:1px solid #dde9f5;
+}
+.rr-table tbody tr td:first-child{
+  background:#f2f7ff;
+  border-right:2px solid #1a4a72;
+  color:#1a2a3a;line-height:1.75;
+}
+.rr-table tbody tr td:last-child{background:#fffff5;}
+.rr-table tbody tr:nth-child(even) td:first-child{background:#e8f2ff;}
+.rr-table tbody tr:nth-child(even) td:last-child{background:#fffde8;}
+/* read col */
+.read-title{
+  font-weight:700;color:#0d1f3a;font-size:1rem;
+  margin-bottom:8px;padding-bottom:6px;
+  border-bottom:2px solid #1a4a72;
+  font-family:'Segoe UI',Arial,sans-serif;
+}
+.read-text{color:#1a2a3a;font-family:'Segoe UI',Arial,sans-serif;font-size:0.87rem;}
+.read-text p{margin-bottom:10px;}
+.read-text p:last-child{margin-bottom:0;}
+.key-term{font-weight:700;color:#1a4a72;text-decoration:underline dotted;cursor:help;}
+.emphasis{font-style:italic;font-weight:600;color:#0d1f3a;}
+.sci-box{
+  background:linear-gradient(135deg,#e8f4ff,#d8ecff);
+  border:2px solid #2d6a9f;border-radius:8px;
+  padding:11px 14px;margin:10px 0;
+  font-family:'Segoe UI',Arial,sans-serif;font-size:0.83rem;color:#0d1f3a;
+}
+.sci-box strong{color:#1a4a72;}
+.vocab-pill{
+  display:inline-block;background:#1a4a72;color:white;
+  border-radius:12px;padding:2px 10px;
+  font-size:0.7rem;font-weight:600;
+  margin:2px 2px 6px 0;font-family:'Segoe UI',Arial,sans-serif;
+}
+.fun-fact{
+  background:#fff8e1;border-left:4px solid #f59e0b;
+  border-radius:0 6px 6px 0;padding:9px 13px;margin:10px 0;
+  font-size:0.82rem;font-family:'Segoe UI',Arial,sans-serif;color:#4a3800;
+}
+.fun-fact strong{color:#d97706;}
+.diagram-box{
+  background:linear-gradient(135deg,#edf4ff,#d8ecff);
+  border:2px solid #2d6a9f;border-radius:8px;
+  padding:12px;margin:10px 0;text-align:center;
+  font-family:'Segoe UI',Arial,sans-serif;
+}
+.diagram-lbl{font-size:0.75rem;color:#1a4a72;font-style:italic;margin-top:5px;}
+.stop-box{
+  display:flex;align-items:center;gap:10px;
+  background:#fff0f0;border:2px solid #dc2626;
+  border-radius:8px;padding:11px 14px;margin:12px 0;
+}
+.stop-icon{font-size:1.6rem;}
+.stop-text{font-weight:700;color:#dc2626;font-size:0.85rem;font-family:'Segoe UI',Arial,sans-serif;}
+.stop-text span{display:block;font-weight:400;color:#555;font-size:0.78rem;margin-top:2px;}
+/* respond col */
+.q-block{
+  background:#fffde0;border:1.5px solid #e6c200;
+  border-radius:8px;padding:12px 14px;margin-bottom:12px;
+  font-family:'Segoe UI',Arial,sans-serif;
+}
+.q-block:last-child{margin-bottom:0;}
+.q-label{font-size:0.67rem;font-weight:700;color:#8a6000;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:4px;}
+.q-prompt{font-weight:600;color:#3a3000;margin-bottom:7px;font-size:0.88rem;}
+.q-starter{font-size:0.78rem;color:#6b5200;font-style:italic;margin-bottom:6px;}
+.rr-ta{
+  width:100%;min-height:65px;
+  border:1.5px solid #cca800;border-radius:6px;
+  padding:8px 10px;font-size:0.84rem;
+  font-family:'Segoe UI',Arial,sans-serif;
+  resize:vertical;background:#fffff5;line-height:1.5;
+}
+.rr-ta:focus{outline:none;border-color:#1a4a72;background:white;box-shadow:0 0 0 3px rgba(26,74,114,0.15);}
+.save-btn{
+  display:block;width:100%;margin-top:6px;
+  padding:7px;background:#1a4a72;color:white;
+  border:none;border-radius:6px;font-size:0.77rem;
+  cursor:pointer;font-family:'Segoe UI',Arial,sans-serif;
+  font-weight:600;transition:background 0.2s;
+}
+.save-btn:hover{background:#0d2040;}
+.save-btn.saved{background:#14532d;}
+.rr-footer{
+  background:#081522;
+  border-top:1px solid #1a4a72;
+  padding:14px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:14px;font-family:'Segoe UI',Arial,sans-serif;
+}
+.rr-footer p{color:#67c5f0;font-size:0.82rem;}
+.rr-return{
+  background:#4fc3f7;color:#04080f;
+  border:none;border-radius:6px;
+  padding:9px 20px;font-weight:700;
+  font-size:0.85rem;cursor:pointer;
+  font-family:'Courier New',monospace;
+  letter-spacing:1px;white-space:nowrap;
+  transition:all 0.2s;flex-shrink:0;
+}
+.rr-return:hover{background:#38bdf8;}
+
+/* ===== QUIZ MODAL ===== */
+.quiz-overlay{
+  display:none;
+  position:fixed;
+  top:0;left:0;right:0;bottom:0;
+  background:rgba(0,0,0,0.92);
+  z-index:200;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  backdrop-filter:blur(4px);
+}
+.quiz-overlay.open{display:flex;}
+.quiz-modal{
+  width:100%;max-width:640px;
+  background:#06101e;
+  border:2px solid #1a4a72;
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow:0 24px 60px rgba(0,0,0,0.9);
+}
+.quiz-hdr{
+  background:linear-gradient(135deg,#081522,#0d2040);
+  padding:20px 24px;text-align:center;
+  border-bottom:2px solid #1a4a72;
+}
+.quiz-hdr h2{color:#4fc3f7;font-size:1.05rem;letter-spacing:2px;margin-bottom:5px;}
+.quiz-hdr p{color:#4a7090;font-size:0.78rem;}
+.quiz-body{padding:24px;}
+.quiz-progress{
+  background:rgba(79,195,247,0.1);
+  border-radius:20px;padding:6px 16px;
+  text-align:center;color:#67c5f0;
+  font-size:0.78rem;margin-bottom:20px;
+  border:1px solid rgba(79,195,247,0.2);
+}
+.quiz-q{
+  color:#c8d8f0;font-size:0.95rem;
+  line-height:1.6;margin-bottom:18px;
+  font-weight:600;
+}
+.quiz-opts{display:flex;flex-direction:column;gap:10px;margin-bottom:18px;}
+.quiz-opt{
+  background:#0d1f30;
+  border:1.5px solid #1e3d5c;
+  border-radius:8px;padding:12px 16px;
+  color:#a8c4de;font-size:0.88rem;
+  cursor:pointer;transition:all 0.2s;
+  text-align:left;font-family:inherit;
+  letter-spacing:0.3px;line-height:1.4;
+}
+.quiz-opt:hover{background:#152840;border-color:#2d6a9f;color:#c8d8f0;}
+.quiz-opt.correct{background:rgba(74,222,128,0.1);border-color:#4ade80;color:#4ade80;}
+.quiz-opt.wrong{background:rgba(248,113,113,0.1);border-color:#f87171;color:#f87171;}
+.quiz-opt:disabled{cursor:not-allowed;}
+.quiz-feedback{
+  border-radius:8px;padding:12px 16px;
+  font-size:0.85rem;line-height:1.6;
+  display:none;margin-bottom:14px;
+  font-family:'Segoe UI',Arial,sans-serif;
+}
+.quiz-feedback.show{display:block;}
+.quiz-feedback.ok{background:rgba(74,222,128,0.08);border:1px solid #4ade80;color:#86efac;}
+.quiz-feedback.bad{background:rgba(248,113,113,0.08);border:1px solid #f87171;color:#fca5a5;}
+.quiz-next{
+  background:#4fc3f7;color:#04080f;
+  border:none;border-radius:8px;
+  padding:11px 24px;font-weight:700;
+  font-size:0.88rem;cursor:pointer;
+  font-family:'Courier New',monospace;
+  letter-spacing:1px;width:100%;
+  transition:all 0.2s;display:none;
+}
+.quiz-next.show{display:block;}
+.quiz-next:hover{background:#38bdf8;}
+
+/* ===== WIN SCREEN ===== */
+.win-overlay{
+  display:none;
+  position:fixed;
+  top:0;left:0;right:0;bottom:0;
+  background:radial-gradient(ellipse at center, #050f00 0%, #02060a 100%);
+  z-index:300;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  text-align:center;
+  padding:40px;
+}
+.win-overlay.open{display:flex;}
+.win-emoji{font-size:4rem;display:block;margin-bottom:16px;animation:spin 3s linear infinite;}
+@keyframes spin{0%{transform:rotate(0);}100%{transform:rotate(360deg);}}
+.win-title{
+  color:#4ade80;font-size:2.2rem;font-weight:700;
+  letter-spacing:4px;
+  text-shadow:0 0 30px rgba(74,222,128,0.7);
+  margin-bottom:12px;
+  animation:float 2s ease-in-out infinite;
+}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+.win-sub{color:#86efac;font-size:0.95rem;margin-bottom:8px;max-width:500px;}
+.win-sub2{color:#5a7090;font-size:0.8rem;max-width:500px;margin-bottom:30px;}
+.win-stats{display:flex;gap:20px;justify-content:center;margin-bottom:30px;flex-wrap:wrap;}
+.win-stat{
+  background:#0d1f30;border:1px solid #1a4a72;
+  border-radius:10px;padding:14px 22px;text-align:center;
+}
+.win-stat-val{color:#4fc3f7;font-size:1.5rem;font-weight:700;display:block;}
+.win-stat-lbl{color:#4a7090;font-size:0.65rem;letter-spacing:1px;display:block;margin-top:3px;}
+.win-restart{
+  background:#4ade80;color:#04080f;
+  border:none;border-radius:8px;
+  padding:12px 30px;font-weight:700;
+  font-size:0.9rem;cursor:pointer;
+  font-family:'Courier New',monospace;
+  letter-spacing:2px;transition:all 0.2s;
+}
+.win-restart:hover{background:#22c55e;transform:scale(1.05);}
+.win-science{
+  max-width:500px;
+  background:rgba(79,195,247,0.06);
+  border:1px solid rgba(79,195,247,0.2);
+  border-radius:10px;padding:16px 20px;
+  margin-bottom:24px;
+  font-family:'Segoe UI',Arial,sans-serif;
+  font-size:0.82rem;color:#7dd3fc;
+  line-height:1.8;text-align:left;
+}
+.win-science strong{color:#4fc3f7;}
+
+/* ===== SCROLLBARS ===== */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:#04080f;}
+::-webkit-scrollbar-thumb{background:#152840;border-radius:3px;}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:680px){
+  .game-wrap{grid-template-columns:1fr;}
+  .sidebar{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div>
+    <div class="game-title">🚀 ESCAPE VOLTA</div>
+    <div class="game-subtitle">A SPACE SCIENCE TEXT ADVENTURE</div>
+  </div>
+  <div class="header-right">
+    <div class="stat-box">
+      <span class="stat-val" id="stat-moves">0</span>
+      <span class="stat-lbl">MOVES</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-val" id="stat-solved">0/6</span>
+      <span class="stat-lbl">SOLVED</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-val" id="stat-inv">0</span>
+      <span class="stat-lbl">ITEMS</span>
+    </div>
+  </div>
+</header>
+
+<!-- DANGER BAR -->
+<div class="danger-bar">
+  <span class="blink">⚠ BLACK HOLE APPROACHING</span>
+  <div class="danger-track"><div class="danger-fill" id="dangerFill"></div></div>
+  <span id="dangerPct">8%</span>
+</div>
+
+<!-- GAME LAYOUT -->
+<div class="game-wrap">
+
+  <!-- TERMINAL -->
+  <div class="terminal-panel">
+    <div id="output"></div>
+    <div class="input-bar">
+      <span class="prompt-sym">&gt;</span>
+      <input id="cmd-in" type="text" autocomplete="off" spellcheck="false"
+        placeholder="type a command... (try HELP)" />
+      <button id="cmd-btn">ENTER</button>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <!-- Room -->
+    <div class="sb-section">
+      <div class="sb-label">Location</div>
+      <div class="room-card">
+        <span class="room-icon-big" id="sb-icon">🚪</span>
+        <div class="room-name-sb" id="sb-room">Entry Airlock</div>
+        <div class="exits-grid" id="exits-grid">
+          <div class="exit-cell exit-n exit-none" id="ex-n">—</div>
+          <div class="exit-cell exit-w exit-none" id="ex-w">—</div>
+          <div class="exit-cell exit-c" style="background:#08111e;"></div>
+          <div class="exit-cell exit-e exit-none" id="ex-e">—</div>
+          <div class="exit-cell exit-s exit-none" id="ex-s">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Inventory -->
+    <div class="sb-section">
+      <div class="sb-label">Inventory</div>
+      <div class="inv-list" id="inv-list">
+        <div class="inv-empty">Empty — find some items!</div>
+      </div>
+    </div>
+
+    <!-- Puzzle Progress -->
+    <div class="sb-section">
+      <div class="sb-label">Mission Progress</div>
+      <div class="puz-list">
+        <div class="puz-item">
+          <div class="puz-dot" id="pd-circuit"></div>
+          <span class="puz-name" id="pn-circuit">Circuit Restored</span>
+        </div>
+        <div class="puz-item">
+          <div class="puz-dot" id="pd-energy"></div>
+          <span class="puz-name" id="pn-energy">Engine Restarted</span>
+        </div>
+        <div class="puz-item">
+          <div class="puz-dot" id="pd-static"></div>
+          <span class="puz-name" id="pn-static">Vent Cleared</span>
+        </div>
+        <div class="puz-item">
+          <div class="puz-dot" id="pd-conductor"></div>
+          <span class="puz-name" id="pn-conductor">Panel Bridged</span>
+        </div>
+        <div class="puz-item">
+          <div class="puz-dot" id="pd-electromagnet"></div>
+          <span class="puz-name" id="pn-electromagnet">Door Opened</span>
+        </div>
+        <div class="puz-item">
+          <div class="puz-dot" id="pd-bridge"></div>
+          <span class="puz-name" id="pn-bridge">Computer Rebooted</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Reference -->
+    <div class="sb-section">
+      <div class="sb-label">Commands</div>
+      <div class="qref">
+        <span>go</span> north/south/east/west<br>
+        <span>take</span> [item]<br>
+        <span>drop</span> [item]<br>
+        <span>inventory</span> (or i)<br>
+        <span>look</span> (or l)<br>
+        <span>examine</span> [thing]<br>
+        <span>use</span> [item] on [target]<br>
+        <span>connect</span> [item] to [thing]<br>
+        <span>wear</span> [item]<br>
+        <span>rub</span> [item]<br>
+        <span>build</span> electromagnet<br>
+        <span>use</span> terminal / computer<br>
+        <span>map</span> | <span>help</span>
+      </div>
+    </div>
+  </div>
+</div><!-- /game-wrap -->
+
+<!-- R/R MODAL -->
+<div class="rr-overlay" id="rrOverlay">
+  <div class="rr-modal">
+    <div class="rr-hdr">
+      <div>
+        <h2 id="rr-title">SCIENCE TERMINAL</h2>
+        <p id="rr-sub">Station Science Log — Read &amp; Respond</p>
+        <span class="rr-badge" id="rr-badge">CIRCUIT SCIENCE</span>
+      </div>
+      <button class="rr-close" onclick="closeRR()">[ ✕ CLOSE ]</button>
+    </div>
+    <div id="rr-content"></div>
+    <div class="rr-footer">
+      <p>📝 Write your responses, then return to the game. Your notes are saved!</p>
+      <button class="rr-return" onclick="closeRR()">↩ RETURN TO GAME</button>
+    </div>
+  </div>
+</div>
+
+<!-- BRIDGE QUIZ MODAL -->
+<div class="quiz-overlay" id="quizOverlay">
+  <div class="quiz-modal">
+    <div class="quiz-hdr">
+      <h2>🖥️ EMERGENCY REBOOT SEQUENCE</h2>
+      <p>Answer all 3 science questions to unlock the escape pods.</p>
+    </div>
+    <div class="quiz-body">
+      <div class="quiz-progress" id="quiz-prog">Question 1 of 3</div>
+      <div class="quiz-q" id="quiz-q">Loading...</div>
+      <div class="quiz-opts" id="quiz-opts"></div>
+      <div class="quiz-feedback" id="quiz-fb"></div>
+      <button class="quiz-next" id="quiz-next" onclick="quizNext()">NEXT QUESTION →</button>
+    </div>
+  </div>
+</div>
+
+<!-- WIN SCREEN -->
+<div class="win-overlay" id="winOverlay">
+  <span class="win-emoji">🚀</span>
+  <div class="win-title">YOU ESCAPED!</div>
+  <div class="win-sub">You outsmarted the black hole using SCIENCE.</div>
+  <div class="win-sub2">Chief Engineer Okafor would be proud.</div>
+  <div class="win-science" id="win-science">
+    <strong>What you learned on this mission:</strong><br>
+    ⚡ <strong>Circuits:</strong> Electricity only flows in a <em>closed</em> circuit — a complete loop.<br>
+    🧤 <strong>Insulators</strong> (rubber, plastic) block electricity. <strong>Conductors</strong> (copper, iron) let it flow.<br>
+    ✨ <strong>Static electricity</strong> = electrons transferring between materials.<br>
+    🔄 <strong>Energy transforms:</strong> electrical → mechanical (fan), electrical → light (lamp).<br>
+    🧲 <strong>Electromagnets</strong> get stronger with more coils AND more batteries.
+  </div>
+  <div class="win-stats">
+    <div class="win-stat">
+      <span class="win-stat-val" id="wst-moves">—</span>
+      <span class="win-stat-lbl">TOTAL MOVES</span>
+    </div>
+    <div class="win-stat">
+      <span class="win-stat-val">6/6</span>
+      <span class="win-stat-lbl">PUZZLES SOLVED</span>
+    </div>
+    <div class="win-stat">
+      <span class="win-stat-val">🏆</span>
+      <span class="win-stat-lbl">SCIENCE HERO</span>
+    </div>
+  </div>
+  <button class="win-restart" onclick="restartGame()">PLAY AGAIN</button>
+</div>
+
+<script>
+// ============================================================
+// TERMINAL CONTENT (Read & Respond)
+// ============================================================
+const TERMINALS = {
+
+circuit: {
+  title: 'CIRCUIT SCIENCE TERMINAL',
+  subtitle: 'Power Core — Station Science Log',
+  badge: '⚡ ELECTRICITY & CIRCUITS',
+  html: `
+  <table class="rr-table">
+    <thead>
+      <tr>
+        <th>📖 READ</th>
+        <th>✏️ RESPOND</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <div class="read-title">What Is Electric Current?</div>
+          <div class="read-text">
+            <p><span class="key-term">Electrical energy</span> is the flow of tiny particles called <span class="emphasis">electrons</span> through a material. Think of it like water flowing through a pipe — the electrons are the water, and the wire is the pipe.</p>
+            <p>This flow of electrons is called <span class="key-term">electric current</span>. Current needs a path to travel along — and that path is called a <span class="key-term">circuit</span>.</p>
+            <div class="sci-box">
+              <strong>🔑 Key Idea:</strong> Electricity is the movement of electrons through a conductor.
+            </div>
+            <div class="vocab-pill">Electron</div>
+            <div class="vocab-pill">Electric Current</div>
+            <div class="vocab-pill">Circuit</div>
+          </div>
+        </td>
+        <td>
+          <div class="q-block">
+            <div class="q-label">Question 1 — Recall</div>
+            <div class="q-prompt">What are the tiny particles that flow to create electricity?</div>
+            <div class="q-starter">The particles are called...</div>
+            <textarea class="rr-ta" id="circ-q1" placeholder="Write your answer here..."></textarea>
+            <button class="save-btn" onclick="saveRR('circ-q1',this)">Save Response</button>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div class="read-title">Open vs. Closed Circuits</div>
+          <div class="read-text">
+            <p>A circuit can be <span class="key-term">open</span> or <span class="key-term">closed</span>. This is super important!</p>
+            <div class="diagram-box">
+              <svg width="280" height="90" viewBox="0 0 280 90">
+                <!-- Closed circuit -->
+                <rect x="10" y="15" width="30" height="18" rx="3" fill="#2d6a9f" stroke="#4fc3f7" stroke-width="1.5"/>
+                <text x="25" y="27" text-anchor="middle" font-size="8" fill="#fff" font-family="monospace">BATT</text>
+                <line x1="40" y1="24" x2="80" y2="24" stroke="#4fc3f7" stroke-width="2"/>
+                <circle cx="90" cy="24" r="8" fill="#0d2040" stroke="#4fc3f7" stroke-width="1.5"/>
+                <text x="90" y="27" text-anchor="middle" font-size="9" fill="#ffd700">💡</text>
+                <line x1="98" y1="24" x2="130" y2="24" stroke="#4fc3f7" stroke-width="2"/>
+                <line x1="130" y1="24" x2="130" y2="70" stroke="#4fc3f7" stroke-width="2"/>
+                <line x1="130" y1="70" x2="10" y2="70" stroke="#4fc3f7" stroke-width="2"/>
+                <line x1="10" y1="70" x2="10" y2="33" stroke="#4fc3f7" stroke-width="2"/>
+                <text x="70" y="85" text-anchor="middle" font-size="9" fill="#4ade80" font-family="sans-serif">✓ CLOSED — bulb GLOWS</text>
+                <!-- Open circuit -->
+                <rect x="155" y="15" width="30" height="18" rx="3" fill="#2d6a9f" stroke="#4fc3f7" stroke-width="1.5"/>
+                <text x="170" y="27" text-anchor="middle" font-size="8" fill="#fff" font-family="monospace">BATT</text>
+                <line x1="185" y1="24" x2="220" y2="24" stroke="#4fc3f7" stroke-width="2"/>
+                <line x1="228" y1="24" x2="260" y2="24" stroke="#f87171" stroke-width="2"/>
+                <line x1="223" y1="20" x2="223" y2="28" stroke="#f87171" stroke-width="2"/>
+                <text x="223" y="15" text-anchor="middle" font-size="7" fill="#f87171" font-family="sans-serif">GAP</text>
+                <circle cx="270" cy="24" r="8" fill="#0d2040" stroke="#555" stroke-width="1.5"/>
+                <text x="270" y="27" text-anchor="middle" font-size="9" fill="#555">💡</text>
+                <line x1="278" y1="24" x2="278" y2="70" stroke="#555" stroke-width="2"/>
+                <line x1="278" y1="70" x2="155" y2="70" stroke="#555" stroke-width="2"/>
+                <line x1="155" y1="70" x2="155" y2="33" stroke="#555" stroke-width="2"/>
+                <text x="216" y="85" text-anchor="middle" font-size="9" fill="#f87171" font-family="sans-serif">✗ OPEN — bulb dark</text>
+              </svg>
+              <div class="diagram-lbl">Closed circuit = complete loop = electricity flows. Open circuit = broken loop = no flow.</div>
+            </div>
+            <p>In a <span class="key-term">closed circuit</span>, electrons have a complete path to travel. The loop is unbroken. Devices get power!</p>
+            <p>In an <span class="key-term">open circuit</span>, there is a break somewhere in the path. Electrons can't jump the gap. Nothing works.</p>
+            <div class="fun-fact"><strong>🛸 Station Fact:</strong> Every light switch in your home creates an open circuit when it's "off" — and closes the circuit when it's "on"!</div>
+          </div>
+        </td>
+        <td>
+          <div class="q-block">
+            <div class="q-label">Question 2 — Explain</div>
+            <div class="q-prompt">In your own words, explain the difference between an open and a closed circuit.</div>
+            <div class="q-starter">A closed circuit means... while an open circuit means...</div>
+            <textarea class="rr-ta" id="circ-q2" placeholder="Write your answer here..."></textarea>
+            <button class="save-btn" onclick="saveRR('circ-q2',this)">Save Response</button>
+          </div>
+          <div class="q-block">
+            <div class="q-label">Question 3 — Apply</div>
+            <div class="q-prompt">The Power Core circuit panel has a gap. What do you need to do to restore the power?</div>
+            <div class="q-starter">To close the circuit, I need to...</div>
+            <textarea class="rr-ta" id="circ-q3" placeholder="Think about what you have in your inventory..."></textarea>
+            <button class="save-btn" onclick="saveRR('circ-q3',this)">Save Response</button>
+          </div>
+          <div class="stop-box">
+            <span class="stop-icon">🛑</span>
+            <div class="stop-text">STOP & THINK
+              <span>Before you close this terminal — do you know what to CONNECT to the circuit panel? (Hint: check your inventory!)</span>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>`
+},
+
+energy: {
+  title: 'ENERGY TRANSFORMATION TERMINAL',
+  subtitle: 'Engine Bay — Station Science Log',
+  badge: '🔄 ENERGY TRANSFORMATIONS',
+  html: `
+  <table class="rr-table">
+    <thead>
+      <tr><th>📖 READ</th><th>✏️ RESPOND</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <div class="read-title">Energy Can Change Forms!</div>
+          <div class="read-text">
+            <p><span class="key-term">Energy transformation</span> means changing energy from one form into another. Energy never disappears — it just changes!</p>
+            <p>Here are examples you see every day:</p>
+            <div class="sci-box">
+              <strong>🔌 Electrical → 🌪️ Mechanical</strong><br>
+              A <em>fan</em> uses electricity to spin its blades (movement = mechanical energy).
+            </div>
+            <div class="sci-box">
+              <strong>🔌 Electrical → 💡 Light</strong><br>
+              A <em>light bulb</em> or LED converts electricity into visible light.
+            </div>
+            <div class="sci-box">
+              <strong>🔌 Electrical → 🔥 Heat</strong><br>
+              A <em>toaster</em> or <em>hair dryer</em> converts electricity into heat energy.
+            </div>
+            <div class="fun-fact"><strong>🌟 Cool Fact:</strong> Most devices don't convert ALL energy perfectly. A light bulb converts some electricity into light AND some into heat — that's why bulbs get warm!</div>
+            <div class="vocab-pill">Energy Transformation</div>
+            <div class="vocab-pill">Mechanical Energy</div>
+            <div class="vocab-pill">Electrical Energy</div>
+          </div>
+        </td>
+        <td>
+          <div class="q-block">
+            <div class="q-label">Question 1 — Match</div>
+            <div class="q-prompt">What energy transformation happens in a fan?</div>
+            <div class="q-starter">A fan transforms _______ energy into _______ energy.</div>
+            <textarea class="rr-ta" id="en-q1" placeholder="Fill in the blanks..."></textarea>
+            <button class="save-btn" onclick="saveRR('en-q1',this)">Save Response</button>
+          </div>
+          <div class="q-block">
+            <div class="q-label">Question 2 — Real World</div>
+            <div class="q-prompt">Name TWO devices from your home and describe the energy transformation each one makes.</div>
+            <div class="q-starter">Device 1: _______ transforms _______ into _______.<br>Device 2: _______ transforms _______ into _______.</div>
+            <textarea class="rr-ta" id="en-q2" placeholder="Think about devices in your kitchen or bedroom..."></textarea>
+            <button class="save-btn" onclick="saveRR('en-q2',this)">Save Response</button>
+          </div>
+          <div class="q-block">
+            <div class="q-label">Question 3 — Apply</div>
+            <div class="q-prompt">The Engine Bay fan motor is dead. What do you need to give it to make it spin?</div>
+            <textarea class="rr-ta" id="en-q3" placeholder="Think about what energy a motor needs..."></textarea>
+            <button class="save-btn" onclick="saveRR('en-q3',this)">Save Response</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>`
+},
+
+static: {
+  title: 'STATIC ELECTRICITY TERMINAL',
+  subtitle: 'Static Chamber — Station Science Log',
+  badge: '✨ STATIC ELECTRICITY',
+  html: `
+  <table class="rr-table">
+    <thead>
+      <tr><th>📖 READ</th><th>✏️ RESPOND</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <div class="read-title">What Is Static Electricity?</div>
+          <div class="read-text">
+            <p><span class="key-term">Static electricity</span> is an electric charge that builds up on the surface of an object. Unlike the electricity in your walls (which flows), static charge just <em>sits there</em> — until something changes!</p>
+            <p>Static electricity is caused by the <span class="key-term">transfer of charges</span> — specifically, electrons moving from one object to another. This usually happens through <span class="emphasis">friction</span> (rubbing).</p>
+            <div class="sci-box">
+              <strong>Example:</strong> When you rub a balloon on your hair, electrons jump from your hair to the balloon. Your hair becomes <em>positively charged</em> (lost electrons). The balloon becomes <em>negatively charged</em> (gained electrons).
+            </div>
+            <p><strong>Like charges repel.</strong> Unlike charges attract. A negatively charged balloon attracts positive objects — like your hair, or bits of paper!</p>
+            <div class="fun-fact"><strong>⚡ Did You Know?</strong> Lightning is GIANT static electricity! Ice crystals in clouds rub together, building up massive charge — until ZAP! It discharges as lightning.</div>
+            <div class="vocab-pill">Static Electricity</div>
+            <div class="vocab-pill">Transfer of Charges</div>
+            <div class="vocab-pill">Friction</div>
+            <div class="vocab-pill">Positive / Negative Charge</div>
+          </div>
+        </td>
+        <td>
+          <div class="q-block">
+            <div class="q-label">Question 1 — Explain</div>
+            <div class="q-prompt">What happens to electrons when you rub a plastic rod?</div>
+            <div class="q-starter">When I rub the rod, electrons...</div>
+            <textarea class="rr-ta" id="st-q1" placeholder="Describe the transfer of charges..."></textarea>
+            <button class="save-btn" onclick="saveRR('st-q1',this)">Save Response</button>
+          </div>
+          <div class="q-block">
+            <div class="q-label">Question 2 — Connect</div>
+            <div class="q-prompt">Why would a CHARGED rod attract neutral metallic dust in the vent?</div>
+            <div class="q-starter">The charged rod attracts the dust because...</div>
+            <textarea class="rr-ta" id="st-q2" placeholder="Think about unlike charges attracting..."></textarea>
+            <button class="save-btn" onclick="saveRR('st-q2',this)">Save Response</button>
+          </div>
+          <div class="q-block">
+            <div class="q-label">Question 3 — Sequence</div>
+            <div class="q-prompt">Put these steps in order: Use rod on dust | Rub the rod | Take the plastic rod</div>
+            <div class="q-starter">Step 1: _____ Step 2: _____ Step 3: _____</div>
+            <textarea class="rr-ta" id="st-q3" placeholder="Order the steps..."></textarea>
+            <button class="save-btn" onclick="saveRR('st-q3',this)">Save Response</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>`
+},
+
+conductor: {
+  title: 'CONDUCTORS & INSULATORS TERMINAL',
+  subtitle: 'Materials Lab — Station Science Log',
+  badge: '🔩 CONDUCTORS VS INSULATORS',
+  html: `
+  <table class="rr-table">
+    <thead>
+      <tr><th>📖 READ</th><th>✏️ RESPOND</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <div class="read-title">Conductors: Electricity's Best Friends</div>
+          <div class="read-text">
+            <p>A <span class="key-term">conductor</span> is a material that allows electrons to move through it <em>freely</em>. Most metals are excellent conductors because their electrons are loosely held and can move easily.</p>
+            <div class="sci-box">
+              <strong>Common Conductors:</strong><br>
+              🥇 Copper (best!) — used in most wires<br>
+              🥈 Silver — very good but expensive<br>
+              🥉 Aluminum, Iron, Gold — also good<br>
+              💧 Water — conducts (especially with salt!)
+            </div>
+            <p>An <span class="key-term">insulator</span> is the opposite — it <em>blocks</em> electrons from flowing. Insulators are used to protect people from electric shocks.</p>
+            <div class="sci-box">
+              <strong>Common Insulators:</strong><br>
+              🧤 Rubber — excellent (used in gloves!)<br>
+              🥤 Plastic — very common<br>
+              🔲 Glass — great insulator<br>
+              🌲 Wood — good insulator (when dry)
+            </div>
+            <div class="fun-fact"><strong>💡 Think About It:</strong> Electrical wires are made of copper (conductor) coated in plastic (insulator). The copper carries the current; the plastic keeps YOU safe!</div>
+            <div class="vocab-pill">Conductor</div>
+            <div class="vocab-pill">Insulator</div>
+            <div class="vocab-pill">Electron Flow</div>
+          </div>
+        </td>
+        <td>
+          <div class="q-block">
+            <div class="q-label">Question 1 — Sort</div>
+            <div class="q-prompt">Sort these into CONDUCTORS and INSULATORS: copper coin, rubber glove, plastic rod, iron nail, glass jar, aluminum foil.</div>
+            <div class="q-starter">Conductors: _____ | Insulators: _____</div>
+            <textarea class="rr-ta" id="con-q1" placeholder="Sort each item..."></textarea>
+            <button class="save-btn" onclick="saveRR('con-q1',this)">Save Response</button>
+          </div>
+          <div class="q-block">
+            <div class="q-label">Question 2 — Explain</div>
+            <div class="q-prompt">Why do electricians wear rubber gloves? Use the words "conductor" and "insulator" in your answer.</div>
+            <textarea class="rr-ta" id="con-q2" placeholder="Explain the safety reason..."></textarea>
+            <button class="save-btn" onclick="saveRR('con-q2',this)">Save Response</button>
+          </div>
+          <div class="q-block">
+            <div class="q-label">Question 3 — Apply</div>
+            <div class="q-prompt">The floor panel has two wires with a gap. You need to bridge the gap. Which item from your inventory should you use — and WHY?</div>
+            <textarea class="rr-ta" id="con-q3" placeholder="Name the item and explain why it works..."></textarea>
+            <button class="save-btn" onclick="saveRR('con-q3',this)">Save Response</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>`
+},
+
+electromagnet: {
+  title: 'ELECTROMAGNET TERMINAL',
+  subtitle: 'Electromagnet Lab — Station Science Log',
+  badge: '🧲 ELECTROMAGNETS',
+  html: `
+  <table class="rr-table">
+    <thead>
+      <tr><th>📖 READ</th><th>✏️ RESPOND</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <div class="read-title">How Electromagnets Work</div>
+          <div class="read-text">
+            <p>A regular magnet is always magnetic. An <span class="key-term">electromagnet</span> is magnetic only when electricity flows through it — and you can control its strength!</p>
+            <p>To build one, you need three things:</p>
+            <div class="sci-box">
+              <strong>🔩 Iron Core</strong> — A nail or iron rod. Iron becomes magnetic when current flows nearby.<br><br>
+              <strong>🌀 Wire Coils</strong> — Insulated wire wrapped many times around the iron core.<br><br>
+              <strong>🔋 Battery</strong> — Provides the electric current.
+            </div>
+            <p><strong>How to make it STRONGER:</strong></p>
+            <div class="sci-box">
+              <strong>More coils = Stronger magnet.</strong> Each loop of wire adds to the magnetic field.<br><br>
+              <strong>More batteries = More current = Stronger magnet.</strong> More electricity = more magnetic force.
+            </div>
+            <div class="diagram-box">
+              <svg width="260" height="70" viewBox="0 0 260 70">
+                <rect x="10" y="28" width="60" height="14" rx="4" fill="#5a3010" stroke="#b07030" stroke-width="1.5"/>
+                <text x="40" y="38" text-anchor="middle" font-size="8" fill="#f0c080" font-family="monospace">IRON NAIL</text>
+                <path d="M70,24 Q85,15 100,24 Q115,33 130,24 Q145,15 160,24 Q175,33 190,24 Q205,15 220,24" fill="none" stroke="#4fc3f7" stroke-width="2.5"/>
+                <path d="M70,46 Q85,55 100,46 Q115,37 130,46 Q145,55 160,46 Q175,37 190,46 Q205,55 220,46" fill="none" stroke="#4fc3f7" stroke-width="2.5"/>
+                <rect x="225" y="22" width="20" height="26" rx="3" fill="#1a6a3a" stroke="#4ade80" stroke-width="1.5"/>
+                <text x="235" y="30" text-anchor="middle" font-size="6" fill="#4ade80" font-family="monospace">+</text>
+                <text x="235" y="44" text-anchor="middle" font-size="6" fill="#4ade80" font-family="monospace">BAT</text>
+                <text x="130" y="65" text-anchor="middle" font-size="9" fill="#fbbf24" font-family="sans-serif">More coils + more batteries = 💪 STRONGER!</text>
+              </svg>
+            </div>
+            <div class="fun-fact"><strong>🌍 Real World:</strong> Electromagnets are used in junkyards to lift cars, in MRI medical scanners, in electric motors, and even in your earbuds!</div>
+            <div class="vocab-pill">Electromagnet</div>
+            <div class="vocab-pill">Iron Core</div>
+            <div class="vocab-pill">Coils</div>
+            <div class="vocab-pill">Current</div>
+          </div>
+        </td>
+        <td>
+          <div class="q-block">
+            <div class="q-label">Question 1 — Recall</div>
+            <div class="q-prompt">What are the three components needed to build an electromagnet?</div>
+            <div class="q-starter">An electromagnet needs: 1. ___ 2. ___ 3. ___</div>
+            <textarea class="rr-ta" id="em-q1" placeholder="List the three parts..."></textarea>
+            <button class="save-btn" onclick="saveRR('em-q1',this)">Save Response</button>
+          </div>
+          <div class="q-block">
+            <div class="q-label">Question 2 — Explain</div>
+            <div class="q-prompt">What TWO things can you do to make an electromagnet stronger?</div>
+            <div class="q-starter">To make it stronger, I can: 1. ___ 2. ___</div>
+            <textarea class="rr-ta" id="em-q2" placeholder="Think about coils and batteries..."></textarea>
+            <button class="save-btn" onclick="saveRR('em-q2',this)">Save Response</button>
+          </div>
+          <div class="q-block">
+            <div class="q-label">Question 3 — Apply</div>
+            <div class="q-prompt">The blast door needs a STRONG electromagnet to open it. What items do you need from your inventory, and what command will you use?</div>
+            <div class="q-starter">I need: ___. I will type: "build electromagnet"</div>
+            <textarea class="rr-ta" id="em-q3" placeholder="List all the items you need..."></textarea>
+            <button class="save-btn" onclick="saveRR('em-q3',this)">Save Response</button>
+          </div>
+          <div class="stop-box">
+            <span class="stop-icon">🛑</span>
+            <div class="stop-text">STOP & CHECK
+              <span>Do you have an iron nail, a wire coil, AND two batteries? You need all of them for maximum magnet power!</span>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>`
+}
+
+}; // end TERMINALS
+
+// ============================================================
+// GAME DATA
+// ============================================================
+const ITEM_DATA = {
+  rubber_gloves:  { name:'Rubber Gloves',   icon:'🧤', aliases:['gloves','rubber gloves','glove','rubber glove'],  desc:'Thick rubber work gloves. Rubber is a perfect INSULATOR — blocks electricity completely. Also keeps your hands from getting zapped.' },
+  copper_wire:    { name:'Copper Wire',     icon:'🔌', aliases:['wire','copper wire','coil wire'],                 desc:'A spool of copper wire. Copper is one of the best CONDUCTORS — electrons flow through it like water through a pipe.' },
+  battery:        { name:'Battery Pack',    icon:'🔋', aliases:['battery','battery pack','power cell','cell'],     desc:'A Volta Station battery pack. Converts chemical energy → electrical energy. Essential for any circuit.' },
+  plastic_rod:    { name:'Plastic Rod',     icon:'📏', aliases:['rod','plastic rod','stick','bar'],                desc:'A smooth clear plastic rod. Plastic is an insulator. But rub it against something and electrons transfer... making it charged!' },
+  copper_coin:    { name:'Copper Coin',     icon:'🪙', aliases:['coin','copper coin','penny'],                     desc:'An old copper souvenir coin. Copper is an excellent conductor of electricity.' },
+  extra_battery:  { name:'Extra Battery',   icon:'🔋', aliases:['extra battery','second battery','spare','extra'], desc:'A spare battery pack. More batteries in a circuit = more current = more power. Very useful for electromagnets.' },
+  iron_nail:      { name:'Iron Nail',       icon:'🔩', aliases:['nail','iron nail','big nail','large nail'],       desc:'A thick iron nail. Iron is ferromagnetic — wrap wire around it with current flowing and you have an electromagnet core!' },
+  coil_of_wire:   { name:'Wire Coil',       icon:'🌀', aliases:['coil','wire coil','coil of wire','coils'],        desc:'A pre-wound coil of insulated copper wire — 20 loops. More coils around a nail = stronger electromagnet.' },
+};
+
+// room items and locked exits are stored in gameState so they can change
+const ROOM_DATA = {
+  airlock: {
+    name:'Entry Airlock', icon:'🚪',
+    baseExits:{ north:'power_core', east:'storage_bay' },
+    lockedExits:{},
+    startItems:[],
+    things:{
+      sign:"The sign reads: \"ALL SYSTEMS CRITICAL. ESCAPE PODS LOCKED. USE SCIENCE. OR DON'T. (Please use science.)\" An arrow points north: POWER CORE.",
+      wall:'The titanium walls vibrate gently. That gentle vibration is actually terrifying if you think about it.',
+      lights:'Pulsing red emergency lights. The universal language of "this is bad."',
+      door:'The main door is sealed. You need to restore power and solve puzzles to escape.',
+    },
+    desc: [
+      '╔══════════════════════════════╗',
+      '║      ENTRY AIRLOCK           ║',
+      '╚══════════════════════════════╝',
+      'Emergency lights pulse red. Space Station VOLTA groans as the black hole\'s gravity intensifies.',
+      'A sign on the wall has some very helpful (and slightly panicked) instructions.',
+      'Exits: <span class="hl-c">NORTH</span> → Power Core &nbsp; <span class="hl-c">EAST</span> → Storage Bay',
+    ]
+  },
+
+  storage_bay: {
+    name:'Storage Bay', icon:'📦',
+    baseExits:{ west:'airlock' },
+    lockedExits:{},
+    startItems:['rubber_gloves','copper_wire','battery','plastic_rod'],
+    things:{
+      note:"Chief Engineer Okafor's note: \"Remember: CONDUCTORS let electricity flow (metals). INSULATORS block it (rubber, plastic). WEAR YOUR GLOVES before touching live wires. P.S. PLEASE ESCAPE. — Okafor\"",
+      shelf:'Mostly empty shelves. Some very useful items remain on the workbench.',
+      workbench:'A metal workbench with useful items on it. Use TAKE [item] to pick things up.',
+      cabinet:'The cabinet is empty. The crew already grabbed the snacks. Rude.',
+    },
+    desc:[
+      '╔══════════════════════════════╗',
+      '║        STORAGE BAY           ║',
+      '╚══════════════════════════════╝',
+      'Shelves line the walls, half-emptied by panicking crew. A workbench holds useful items.',
+      'A note from Chief Engineer Okafor is taped to the shelf.',
+      'Exits: <span class="hl-c">WEST</span> → Airlock',
+    ]
+  },
+
+  power_core: {
+    name:'Power Core', icon:'⚡',
+    baseExits:{ south:'airlock', east:'engine_bay' },
+    lockedExits:{ north:{ room:'static_chamber', msg:'The north door is sealed — it\'s electronically locked. Restore power first!' } },
+    startItems:[],
+    things:{
+      panel:'The circuit panel has two metal TERMINALS sticking out. There\'s a gap — the circuit is OPEN. Connect something conductive across both terminals to CLOSE the circuit! (Tip: wear rubber gloves first for safety.)',
+      terminals:'Two exposed metal terminals. They need to be connected by a conductor to close the circuit.',
+      circuit:'The circuit is currently OPEN — no electricity is flowing. Connect a conductor across the terminals!',
+      terminal:'[SCIENCE TERMINAL] Tap to read Station Science Logs about circuits. Type: USE TERMINAL',
+      door:'The north door is electronically sealed. Restoring the circuit should unlock it.',
+    },
+    terminalKey:'circuit',
+    desc:[
+      '╔══════════════════════════════╗',
+      '║        POWER CORE            ║',
+      '╚══════════════════════════════╝',
+      'A massive CIRCUIT PANEL dominates the north wall — two exposed terminals with a gap between them.',
+      'The circuit is <span class="hl-p">OPEN</span>. Power is dead. The north door is electronically locked.',
+      'A <span class="hl-c">Science Terminal</span> blinks in the corner. Type: <span class="hl">EXAMINE TERMINAL</span> or <span class="hl">USE TERMINAL</span>',
+      'Exits: <span class="hl-c">SOUTH</span> → Airlock &nbsp; <span class="hl-c">EAST</span> → Engine Bay &nbsp; <span class="warn">NORTH</span> → (locked)',
+    ]
+  },
+
+  engine_bay: {
+    name:'Engine Bay', icon:'🔧',
+    baseExits:{ west:'power_core' },
+    lockedExits:{},
+    startItems:['extra_battery','iron_nail'],
+    things:{
+      fan:'A large ceiling ventilation fan. The motor has two connector ports. It\'s completely dead — no power. Connect a battery to it to transform ELECTRICAL energy into MECHANICAL energy!',
+      motor:'The fan motor needs electrical energy to convert it into mechanical (spinning) energy. Try: USE BATTERY ON MOTOR',
+      connector:'The motor\'s connector ports. They accept a battery connection.',
+      box:'A maintenance supply box. It\'s open — contains useful items!',
+      terminal:'[SCIENCE TERMINAL] Read about energy transformations! Type: USE TERMINAL',
+    },
+    terminalKey:'energy',
+    desc:[
+      '╔══════════════════════════════╗',
+      '║         ENGINE BAY           ║',
+      '╚══════════════════════════════╝',
+      'A giant ventilation FAN hangs from the ceiling, totally still. Its motor is dead.',
+      'A maintenance box is open on the wall — useful items inside.',
+      'A <span class="hl-c">Science Terminal</span> is mounted near the motor.',
+      'Exits: <span class="hl-c">WEST</span> → Power Core',
+    ]
+  },
+
+  static_chamber: {
+    name:'Static Chamber', icon:'✨',
+    baseExits:{ south:'power_core' },
+    lockedExits:{ west:{ room:'materials_lab', msg:'The west passage is blocked by charged particles crackling across the doorway. Clear the vent to reset the charge field!' } },
+    startItems:[],
+    things:{
+      vent:'The ventilation duct is clogged with metallic dust. The dust is electrically NEUTRAL — but a CHARGED object can attract neutral materials through electrostatic force. Try charging something and using it on the dust!',
+      dust:'Metallic dust packed into the vent. A charged rod could attract it and pull it away. First, you need to CHARGE the rod by rubbing it!',
+      sparks:'Tiny electric sparks drift through the air like glitchy fireflies. Beautiful and slightly dangerous.',
+      terminal:'[SCIENCE TERMINAL] Learn about static electricity! Type: USE TERMINAL',
+    },
+    terminalKey:'static',
+    desc:[
+      '╔══════════════════════════════╗',
+      '║       STATIC CHAMBER         ║',
+      '╚══════════════════════════════╝',
+      'Tiny sparks drift through the air. Leftover charge from a particle experiment fills this room.',
+      'The VENTILATION DUCT is blocked by metallic dust — air isn\'t flowing and the station is overheating.',
+      'A <span class="hl-c">Science Terminal</span> glows on the wall.',
+      'Exits: <span class="hl-c">SOUTH</span> → Power Core &nbsp; <span class="warn">WEST</span> → (blocked)',
+    ]
+  },
+
+  materials_lab: {
+    name:'Materials Lab', icon:'🔬',
+    baseExits:{ east:'static_chamber' },
+    lockedExits:{ north:{ room:'electromagnet_lab', msg:'The north hatch is locked — it needs an electrical signal to open. Bridge the floor panel gap first!' } },
+    startItems:['copper_coin'],
+    things:{
+      gap:'Two live electrical wires with a GAP between them in the floor panel. You need to bridge them with a CONDUCTOR (something metallic). A piece of rubber or plastic won\'t work — those are insulators!',
+      panel:'The split floor panel. Two wires need to be connected by a conductor.',
+      bins:'Labeled sample bins: METALS bin (copper, iron, aluminum) = CONDUCTORS. PLASTIC/RUBBER/GLASS bins = INSULATORS.',
+      workbench:'A sturdy workbench. Someone left a copper coin on it.',
+      terminal:'[SCIENCE TERMINAL] Read about conductors and insulators! Type: USE TERMINAL',
+    },
+    terminalKey:'conductor',
+    desc:[
+      '╔══════════════════════════════╗',
+      '║       MATERIALS LAB          ║',
+      '╚══════════════════════════════╝',
+      'Samples of materials line the walls. A floor panel has SPLIT open, exposing two live wires with a GAP between them.',
+      'You need to <span class="hl-c">bridge the gap</span> with the right material. There\'s a <span class="hl-s">copper coin</span> on the workbench.',
+      'A <span class="hl-c">Science Terminal</span> is on the wall.',
+      'Exits: <span class="hl-c">EAST</span> → Static Chamber &nbsp; <span class="warn">NORTH</span> → (locked)',
+    ]
+  },
+
+  electromagnet_lab: {
+    name:'Electromagnet Lab', icon:'🧲',
+    baseExits:{ south:'materials_lab' },
+    lockedExits:{ north:{ room:'control_bridge', msg:'The blast door is magnetically sealed. Build a strong electromagnet to pull it open!' } },
+    startItems:[],
+    things:{
+      door:'A heavy magnetic blast door on the NORTH wall. It\'s controlled by an electromagnet. You\'ll need to BUILD a powerful electromagnet here — and strength matters! More coils, more batteries = stronger magnet.',
+      station:'The electromagnet build station. A platform with connectors. You need an iron nail + wire coil + TWO batteries. Type: BUILD ELECTROMAGNET',
+      platform:'The build platform awaits your components. Gather: iron nail, wire coil, both batteries, then BUILD ELECTROMAGNET.',
+      terminal:'[SCIENCE TERMINAL] Learn how electromagnets work! Type: USE TERMINAL',
+      magnet:'A broken electromagnet is bolted to the wall — too weak. You need to build your own!',
+    },
+    terminalKey:'electromagnet',
+    desc:[
+      '╔══════════════════════════════╗',
+      '║     ELECTROMAGNET LAB        ║',
+      '╚══════════════════════════════╝',
+      'A MAGNETIC BLAST DOOR is sealed on the north wall. An electromagnet BUILD STATION sits in the center.',
+      'You\'ll need the right components to build a <span class="hl-m">powerful electromagnet</span> and pry that door open.',
+      'A <span class="hl-c">Science Terminal</span> blinks nearby.',
+      'Exits: <span class="hl-c">SOUTH</span> → Materials Lab &nbsp; <span class="warn">NORTH</span> → (magnetically sealed)',
+    ]
+  },
+
+  control_bridge: {
+    name:'Control Bridge', icon:'🖥️',
+    baseExits:{ south:'electromagnet_lab' },
+    lockedExits:{ north:{ room:'escape_pod', msg:'The escape pods are locked. Complete the emergency reboot first!' } },
+    startItems:[],
+    things:{
+      computer:'The main computer. Type: USE COMPUTER to begin the emergency reboot sequence. It requires answering 3 science questions correctly!',
+      screen:'The screen reads: "EMERGENCY REBOOT REQUIRED. ANSWER SCIENCE SECURITY QUESTIONS TO UNLOCK ESCAPE PODS." Type USE COMPUTER to proceed.',
+      viewport:'Through the viewport, space itself bends around the black hole\'s event horizon. Stars stretch into rings of light. It\'s gorgeous and you\'re about to be spaghettified if you don\'t hurry.',
+      console:'The main console. USE COMPUTER to start the reboot!',
+    },
+    desc:[
+      '╔══════════════════════════════╗',
+      '║       CONTROL BRIDGE         ║',
+      '╚══════════════════════════════╝',
+      'The MAIN COMPUTER terminal dominates the room. Status screens flash urgent warnings.',
+      'A message pulses: <span class="hl-p">"EMERGENCY REBOOT REQUIRED — ANSWER SCIENCE QUESTIONS TO UNLOCK ESCAPE PODS"</span>',
+      'Through the viewport, the black hole is very, very close. The universe is bending. Time to move.',
+      'Exits: <span class="hl-c">SOUTH</span> → Electromagnet Lab &nbsp; <span class="warn">NORTH</span> → (pods locked)',
+    ]
+  },
+
+  escape_pod: {
+    name:'Escape Pod Bay', icon:'🚀',
+    baseExits:{ south:'control_bridge' },
+    lockedExits:{},
+    startItems:[],
+    things:{ pod:'The escape pod is ready for launch. Buckle up. Science wins today.' },
+    isWin:true,
+    desc:[
+      '╔══════════════════════════════╗',
+      '║      ESCAPE POD BAY 🚀       ║',
+      '╚══════════════════════════════╝',
+      'Three gleaming escape pods sit ready for launch. Green lights EVERYWHERE.',
+      'You did it.',
+    ]
+  },
+};
+
+// ============================================================
+// GAME STATE
+// ============================================================
+let GS = {};
+function initGS() {
+  GS = {
+    room: 'airlock',
+    inventory: [],
+    glovesWorn: false,
+    rodCharged: false,
+    puzzles: {
+      circuit: false,
+      energy: false,
+      static: false,
+      conductor: false,
+      electromagnet: false,
+      bridge: false,
+    },
+    terminalsRead: {},
+    rrSaved: {},
+    moveCount: 0,
+    roomItems: {},
+    bridgeQuizActive: false,
+    bridgeQ: 0,
+    bridgeScore: 0,
+  };
+  // init room items from data
+  for (let r in ROOM_DATA) {
+    GS.roomItems[r] = [...(ROOM_DATA[r].startItems || [])];
+  }
+}
+
+// ============================================================
+// OUTPUT SYSTEM
+// ============================================================
+function print(text, cls='') {
+  const out = document.getElementById('output');
+  const d = document.createElement('div');
+  d.className = 'ln ' + cls;
+  d.innerHTML = text;
+  out.appendChild(d);
+  out.scrollTop = out.scrollHeight;
+}
+function sep() { print('────────────────────────────────────────', 'sep'); }
+function blank() { print('', ''); }
+
+// ============================================================
+// ITEM HELPERS
+// ============================================================
+function findItem(query) {
+  query = query.trim().toLowerCase();
+  for (let id in ITEM_DATA) {
+    const d = ITEM_DATA[id];
+    if (id === query || d.name.toLowerCase() === query) return id;
+    if (d.aliases && d.aliases.includes(query)) return id;
+    // partial match
+    if (d.name.toLowerCase().includes(query) || query.includes(id.replace('_',' '))) return id;
+    // alias partial
+    if (d.aliases && d.aliases.some(a => a.includes(query) || query.includes(a))) return id;
+  }
+  return null;
+}
+function hasItem(id) { return GS.inventory.includes(id); }
+function roomHasItem(id) { return GS.roomItems[GS.room] && GS.roomItems[GS.room].includes(id); }
+
+// ============================================================
+// PARSER
+// ============================================================
+function parse(raw) {
+  GS.moveCount++;
+  updateStats();
+
+  const input = raw.trim().toLowerCase();
+  if (!input) return;
+
+  print(raw, 'cmd-echo');
+
+  const words = input.split(/\s+/);
+  const v = words[0];
+  const rest = words.slice(1).join(' ').trim();
+
+  // Directions
+  const dirMap = { n:'north', s:'south', e:'east', w:'west', north:'north', south:'south', east:'east', west:'west' };
+  if (dirMap[v] && !rest) { cmdGo(dirMap[v]); return; }
+  if (v === 'go') { cmdGo(dirMap[rest] || rest); return; }
+
+  // Take / get
+  if (['take','get','grab','pick'].includes(v)) {
+    const item = rest.replace(/^up\s*/,'').trim();
+    cmdTake(item); return;
+  }
+
+  // Drop
+  if (['drop','discard','throw'].includes(v)) { cmdDrop(rest); return; }
+
+  // Look
+  if (v === 'l' || v === 'look') {
+    if (!rest || rest === 'around') { cmdLook(); return; }
+    const clean = rest.replace(/^at\s*/,'');
+    cmdExamine(clean); return;
+  }
+
+  // Examine
+  if (['examine','x','inspect','read','check'].includes(v)) { cmdExamine(rest); return; }
+
+  // Inventory
+  if (['inventory','inv','i'].includes(v)) { cmdInventory(); return; }
+
+  // Use
+  if (v === 'use') { cmdUse(rest); return; }
+
+  // Connect
+  if (v === 'connect') { cmdConnect(rest); return; }
+
+  // Wear / put on
+  if (['wear','put','equip'].includes(v)) {
+    const item = rest.replace(/^on\s*/,'').trim();
+    cmdWear(item); return;
+  }
+
+  // Rub
+  if (['rub','charge','scrub','stroke'].includes(v)) { cmdRub(rest); return; }
+
+  // Build
+  if (v === 'build' || v === 'assemble' || v === 'make' || v === 'construct') {
+    cmdBuild(rest); return;
+  }
+
+  // Help
+  if (v === 'help' || v === '?') { cmdHelp(); return; }
+
+  // Map
+  if (v === 'map') { cmdMap(); return; }
+
+  // Score / status
+  if (v === 'score' || v === 'status') { cmdScore(); return; }
+
+  print("I don't know what \"" + raw + "\" means. Type <span class='hl'>HELP</span> for commands.", 'err');
+}
+
+// ============================================================
+// COMMANDS
+// ============================================================
+function cmdGo(dir) {
+  const room = ROOM_DATA[GS.room];
+  const exits = { ...room.baseExits };
+
+  // check locked exits
+  if (room.lockedExits && room.lockedExits[dir]) {
+    if (GS.puzzles[getPuzzleForLock(GS.room, dir)]) {
+      // unlocked by puzzle — fall through
+    } else {
+      print(room.lockedExits[dir].msg, 'err');
+      return;
+    }
+  }
+
+  // check dynamic unlocks
+  if (GS.room === 'power_core' && dir === 'north' && !GS.puzzles.circuit) {
+    print('The north door is electronically locked. Restore power first!', 'err');
+    return;
+  }
+  if (GS.room === 'static_chamber' && dir === 'west' && !GS.puzzles.static) {
+    print('The west passage crackles with charge arcs. Clear the vent to reset the field!', 'err');
+    return;
+  }
+  if (GS.room === 'materials_lab' && dir === 'north' && !GS.puzzles.conductor) {
+    print('The north hatch is locked. Bridge the floor panel gap to send an electrical signal!', 'err');
+    return;
+  }
+  if (GS.room === 'electromagnet_lab' && dir === 'north' && !GS.puzzles.electromagnet) {
+    print('The blast door is magnetically sealed. Build a powerful electromagnet to open it!', 'err');
+    return;
+  }
+  if (GS.room === 'control_bridge' && dir === 'north' && !GS.puzzles.bridge) {
+    print('The escape pods are locked! Complete the emergency computer reboot first.', 'err');
+    return;
+  }
+
+  const dest = exits[dir] || (room.lockedExits[dir] && room.lockedExits[dir].room);
+  if (!dest) {
+    print("You can't go " + dir + " from here.", 'err');
+    return;
+  }
+
+  GS.room = dest;
+  describeRoom();
+
+  // Win condition
+  if (ROOM_DATA[GS.room].isWin) {
+    setTimeout(triggerWin, 800);
+  }
+}
+
+function getPuzzleForLock(room, dir) {
+  const locks = {
+    power_core: { north: 'circuit' },
+    static_chamber: { west: 'static' },
+    materials_lab: { north: 'conductor' },
+    electromagnet_lab: { north: 'electromagnet' },
+    control_bridge: { north: 'bridge' },
+  };
+  return locks[room] && locks[room][dir];
+}
+
+function cmdLook() {
+  describeRoom();
+}
+
+function describeRoom() {
+  sep();
+  const room = ROOM_DATA[GS.room];
+  print(room.name.toUpperCase() + ' ' + room.icon, 'room-title');
+  room.desc.forEach(line => print(line, 'desc'));
+
+  // items in room
+  const items = GS.roomItems[GS.room];
+  if (items && items.length > 0) {
+    blank();
+    print('Items here: ' + items.map(id => ITEM_DATA[id].icon + ' ' + ITEM_DATA[id].name).join(', '), 'item-line');
+  }
+
+  // terminal hint
+  if (room.terminalKey) {
+    print('📡 Science Terminal available — type <span class="hl">USE TERMINAL</span> to access it.', 'info');
+  }
+
+  updateSidebar();
+}
+
+function cmdTake(query) {
+  if (!query) { print("Take what? Try: TAKE [item name]", 'err'); return; }
+
+  // find item in room
+  const items = GS.roomItems[GS.room];
+  let found = null;
+  for (let id of items) {
+    const d = ITEM_DATA[id];
+    const q = query.toLowerCase();
+    if (id === q || d.name.toLowerCase() === q || d.name.toLowerCase().includes(q) ||
+        (d.aliases && d.aliases.some(a => a === q || a.includes(q) || q.includes(a)))) {
+      found = id; break;
+    }
+  }
+
+  if (!found) {
+    // not in room — check inventory
+    const inv = findItem(query);
+    if (inv && hasItem(inv)) {
+      print("You already have the " + ITEM_DATA[inv].name + ".", 'warn');
+    } else {
+      print("There's no " + query + " here to take.", 'err');
+    }
+    return;
+  }
+
+  GS.roomItems[GS.room] = items.filter(i => i !== found);
+  GS.inventory.push(found);
+  print("✓ Taken: " + ITEM_DATA[found].icon + " " + ITEM_DATA[found].name, 'ok');
+  updateSidebar();
+  updateStats();
+}
+
+function cmdDrop(query) {
+  const id = findItem(query);
+  if (!id || !hasItem(id)) {
+    print("You don't have that.", 'err'); return;
+  }
+  if (id === 'rubber_gloves' && GS.glovesWorn) {
+    GS.glovesWorn = false;
+    print("You remove the rubber gloves.", 'warn');
+  }
+  GS.inventory = GS.inventory.filter(i => i !== id);
+  GS.roomItems[GS.room].push(id);
+  print("You drop the " + ITEM_DATA[id].name + ".", 'ok');
+  updateSidebar();
+  updateStats();
+}
+
+function cmdInventory() {
+  if (GS.inventory.length === 0) {
+    print("Your pockets are empty. Go find some useful items in the Storage Bay!", 'warn');
+    return;
+  }
+  print("--- Your Inventory ---", 'info');
+  GS.inventory.forEach(id => {
+    const d = ITEM_DATA[id];
+    const worn = (id === 'rubber_gloves' && GS.glovesWorn) ? ' <span style="color:#f97316">[WORN]</span>' : '';
+    const charged = (id === 'plastic_rod' && GS.rodCharged) ? ' <span style="color:#fbbf24">[CHARGED ⚡]</span>' : '';
+    print(d.icon + ' ' + d.name + worn + charged, 'info');
+  });
+}
+
+function cmdExamine(query) {
+  if (!query) { cmdLook(); return; }
+
+  const room = ROOM_DATA[GS.room];
+
+  // Check room things first
+  for (let key in room.things) {
+    if (query.includes(key) || key.includes(query)) {
+      print(room.things[key], 'desc');
+      return;
+    }
+  }
+
+  // Check item in inventory
+  const id = findItem(query);
+  if (id) {
+    if (hasItem(id)) {
+      const d = ITEM_DATA[id];
+      let extra = '';
+      if (id === 'plastic_rod' && GS.rodCharged) extra = ' <span class="hl-s">⚡ Currently CHARGED with static electricity!</span>';
+      if (id === 'rubber_gloves' && GS.glovesWorn) extra = ' <span style="color:#f97316">Currently WORN.</span>';
+      print(d.icon + ' ' + d.name + ': ' + d.desc + extra, 'desc');
+      return;
+    }
+    if (roomHasItem(id)) {
+      print(ITEM_DATA[id].icon + ' ' + ITEM_DATA[id].name + ': ' + ITEM_DATA[id].desc, 'desc');
+      return;
+    }
+  }
+
+  print("You don't see any " + query + " here.", 'err');
+}
+
+function cmdWear(query) {
+  const id = findItem(query);
+  if (!id || !hasItem(id)) {
+    print("You don't have that.", 'err'); return;
+  }
+  if (id === 'rubber_gloves') {
+    GS.glovesWorn = true;
+    print("🧤 You pull on the thick rubber gloves. Your hands are now protected by an excellent INSULATOR!", 'ok');
+    print("💡 Rubber blocks electricity — so you can safely handle live wires without getting zapped.", 'hint');
+    updateSidebar();
+    return;
+  }
+  print("You put on the " + ITEM_DATA[id].name + ", but it doesn't seem to do anything special here.", 'warn');
+}
+
+function cmdRub(query) {
+  const id = findItem(query);
+  if (!id || !hasItem(id)) {
+    if (query.includes('rod') || query.includes('plastic') || query.includes('stick')) {
+      print("You don't have the plastic rod. Find one in the Storage Bay!", 'err');
+    } else {
+      print("You vigorously rub... nothing. That was weird.", 'warn');
+    }
+    return;
+  }
+
+  if (id === 'plastic_rod') {
+    if (GS.rodCharged) {
+      print("The rod is already charged with static electricity! ⚡ It tingles in your hand.", 'warn');
+      return;
+    }
+    GS.rodCharged = true;
+    print("⚡ You rub the plastic rod briskly against your sleeve.", 'desc');
+    print("✨ Electrons TRANSFER from your sleeve to the rod! The rod becomes NEGATIVELY CHARGED.", 'ok');
+    print("💡 This is <span class='hl-s'>static electricity</span> — a transfer of charges through friction!", 'hint');
+    print("The rod now has a faint glow and attracts small objects nearby. Try using it on something!", 'info');
+    updateSidebar();
+    return;
+  }
+
+  print("You rub the " + ITEM_DATA[id].name + ". Nothing interesting happens.", 'warn');
+}
+
+function cmdUse(rest) {
+  // "use [item] on [target]" or "use [item]"
+  const onMatch = rest.match(/^(.+?)\s+on\s+(.+)$/);
+  if (onMatch) {
+    useOnTarget(onMatch[1].trim(), onMatch[2].trim());
+    return;
+  }
+  // single use: terminal, computer, or item
+  if (rest.includes('terminal') || rest.includes('console') || rest.includes('log') || rest.includes('panel') || rest.includes('screen')) {
+    const room = ROOM_DATA[GS.room];
+    if (room.terminalKey) {
+      openRR(room.terminalKey);
+    } else {
+      print("There's no Science Terminal in this room.", 'err');
+    }
+    return;
+  }
+  if (rest.includes('computer') || rest.includes('reboot') || (rest === '' && GS.room === 'control_bridge')) {
+    if (GS.room === 'control_bridge') {
+      cmdBridgeQuiz();
+    } else {
+      print("There's no computer here.", 'err');
+    }
+    return;
+  }
+
+  // use [item] — context-sensitive
+  const id = findItem(rest);
+  if (!id) { print("Use what? Try: USE [item] ON [target]", 'err'); return; }
+  if (!hasItem(id)) { print("You don't have the " + (ITEM_DATA[id]?.name || rest) + ".", 'err'); return; }
+
+  // auto-use context
+  if (GS.room === 'power_core' && (id === 'copper_wire' || id === 'copper_coin')) {
+    attemptCircuit(id); return;
+  }
+  if (GS.room === 'engine_bay' && (id === 'battery' || id === 'extra_battery')) {
+    attemptEnergy(); return;
+  }
+  if (GS.room === 'static_chamber' && id === 'plastic_rod') {
+    if (!GS.puzzles.static) { attemptStatic(); } else { print("The vent is already clear!", 'warn'); }
+    return;
+  }
+
+  print("You use the " + ITEM_DATA[id].name + ", but nothing special happens here. Try USE [item] ON [target].", 'warn');
+}
+
+function cmdConnect(rest) {
+  const toMatch = rest.match(/^(.+?)\s+(?:to|with|and|into)\s+(.+)$/);
+  if (toMatch) {
+    useOnTarget(toMatch[1].trim(), toMatch[2].trim());
+    return;
+  }
+  // connect [item] alone
+  const id = findItem(rest);
+  if (id && hasItem(id)) {
+    if (GS.room === 'power_core' && (id === 'copper_wire' || id === 'copper_coin')) {
+      attemptCircuit(id); return;
+    }
+    if (GS.room === 'engine_bay' && (id === 'battery' || id === 'extra_battery')) {
+      attemptEnergy(); return;
+    }
+  }
+  print("Connect what to what? Try: CONNECT [item] TO [target]", 'err');
+}
+
+function useOnTarget(itemStr, targetStr) {
+  const id = findItem(itemStr);
+
+  // Terminal use
+  if (targetStr.includes('terminal') || targetStr.includes('console')) {
+    const room = ROOM_DATA[GS.room];
+    if (room.terminalKey) { openRR(room.terminalKey); } else { print("No terminal here.", 'err'); }
+    return;
+  }
+  if (targetStr.includes('computer') || targetStr.includes('reboot')) {
+    if (GS.room === 'control_bridge') { cmdBridgeQuiz(); } else { print("No computer here.", 'err'); }
+    return;
+  }
+
+  if (!id) { print("You don't have any " + itemStr + ".", 'err'); return; }
+  if (!hasItem(id)) { print("You don't have the " + ITEM_DATA[id].name + ".", 'err'); return; }
+
+  // ---- CIRCUIT PUZZLE ----
+  if (GS.room === 'power_core' && (targetStr.includes('panel') || targetStr.includes('terminal') ||
+      targetStr.includes('circuit') || targetStr.includes('wire') || targetStr.includes('port') ||
+      targetStr.includes('gap') || targetStr.includes('connect'))) {
+    attemptCircuit(id); return;
+  }
+
+  // ---- ENERGY PUZZLE ----
+  if (GS.room === 'engine_bay' && (targetStr.includes('motor') || targetStr.includes('fan') ||
+      targetStr.includes('connector') || targetStr.includes('engine'))) {
+    if (id === 'battery' || id === 'extra_battery') { attemptEnergy(); return; }
+    print("The motor needs a BATTERY to get electrical energy. Try: CONNECT BATTERY TO MOTOR", 'err');
+    return;
+  }
+
+  // ---- STATIC PUZZLE ----
+  if (GS.room === 'static_chamber' && (targetStr.includes('dust') || targetStr.includes('vent') ||
+      targetStr.includes('clog') || targetStr.includes('debris'))) {
+    if (id === 'plastic_rod') { attemptStatic(); return; }
+    print("The " + ITEM_DATA[id].name + " can't clear the dust. You need something CHARGED with static electricity!", 'err');
+    return;
+  }
+
+  // ---- CONDUCTOR PUZZLE ----
+  if (GS.room === 'materials_lab' && (targetStr.includes('gap') || targetStr.includes('wire') ||
+      targetStr.includes('panel') || targetStr.includes('bridge') || targetStr.includes('floor'))) {
+    attemptConductor(id); return;
+  }
+
+  // ---- ELECTROMAGNET PUZZLE ----
+  if (GS.room === 'electromagnet_lab') {
+    print("To build the electromagnet, type: BUILD ELECTROMAGNET (and make sure you have nail + coil + both batteries!)", 'info');
+    return;
+  }
+
+  print("Using the " + ITEM_DATA[id].name + " on " + targetStr + " doesn't seem to do anything here.", 'warn');
+}
+
+function cmdBuild(query) {
+  if (!query.includes('magnet') && !query.includes('electro') && query !== '') {
+    print("Build what? Try: BUILD ELECTROMAGNET", 'err'); return;
+  }
+  if (GS.room !== 'electromagnet_lab') {
+    print("You'd need to be in the Electromagnet Lab for that.", 'err'); return;
+  }
+  attemptElectromagnet();
+}
+
+// ============================================================
+// PUZZLE LOGIC
+// ============================================================
+
+// PUZZLE 1: Circuit
+function attemptCircuit(itemId) {
+  if (GS.puzzles.circuit) { print("The circuit is already restored. Power flows!", 'warn'); return; }
+
+  // Must wear gloves for safety
+  if (!GS.glovesWorn) {
+    print("⚡ ZAP!! You reach toward the live terminals bare-handed.", 'err');
+    print("A small but painful shock jumps to your fingers. \"OW! That is definitely electricity!\"", 'drama');
+    print("💡 You need an <span class='hl-i'>INSULATOR</span> to protect yourself! Find those rubber gloves and type <span class='hl'>WEAR GLOVES</span> first.", 'hint');
+    return;
+  }
+
+  // Check if it's a conductor
+  const conductors = ['copper_wire', 'copper_coin', 'iron_nail'];
+  const insulators = ['rubber_gloves', 'plastic_rod', 'coil_of_wire'];
+
+  if (insulators.includes(itemId)) {
+    const name = ITEM_DATA[itemId].name;
+    print("You press the " + name + " against the terminals. Nothing happens.", 'err');
+    print("💡 " + name + " is an <span class='hl-i'>INSULATOR</span> — it BLOCKS electricity. You need a <span class='hl-c'>CONDUCTOR</span> (something metallic) to close the circuit!", 'hint');
+    return;
+  }
+
+  if (conductors.includes(itemId)) {
+    const name = ITEM_DATA[itemId].name;
+    print("🔧 You carefully bridge the two terminals with the " + name + "...", 'desc');
+    print("⚡ BZZT — <span class='hl-p'>CIRCUIT CLOSED!</span> Electricity flows through the complete loop!", 'ok');
+    print("💡 The lights SNAP on! Emergency systems boot up. A deep hum fills the station.", 'ok');
+    print("🚪 The north door CLICKS and slides open!", 'ok');
+    print("🎓 Science win! A <span class='hl-p'>closed circuit</span> allows current to flow. An open circuit breaks the loop!", 'hint');
+    GS.puzzles.circuit = true;
+    solvePuzzle('circuit');
+    // remove item used (wire is consumed)
+    GS.inventory = GS.inventory.filter(i => i !== itemId);
+    updateSidebar();
+    updateStats();
+    return;
+  }
+
+  print("You try to use the " + ITEM_DATA[itemId].name + " on the panel, but it doesn't fit or work here.", 'err');
+}
+
+// PUZZLE 2: Energy Transformation
+function attemptEnergy() {
+  if (GS.puzzles.energy) { print("The fan is already spinning. Energy transformed!", 'warn'); return; }
+
+  if (!hasItem('battery') && !hasItem('extra_battery')) {
+    print("You don't have a battery. Find one in the Storage Bay!", 'err'); return;
+  }
+
+  const batId = hasItem('battery') ? 'battery' : 'extra_battery';
+  print("🔧 You connect the " + ITEM_DATA[batId].name + " to the fan motor connectors...", 'desc');
+  print("⚡ Electrical energy flows from the battery into the motor!", 'info');
+  print("🌀 The fan blades BEGIN TO SPIN! Faster and faster — a cool breeze fills the bay!", 'ok');
+  print("🎓 Science! <span class='hl-e'>Electrical energy</span> → <span class='hl-e'>Mechanical energy</span> (movement). That's an energy transformation!", 'hint');
+  print("A maintenance drawer pops open from the vibration. Inside: nothing extra — but you feel smarter.", 'info');
+  GS.puzzles.energy = true;
+  solvePuzzle('energy');
+}
+
+// PUZZLE 3: Static Electricity
+function attemptStatic() {
+  if (GS.puzzles.static) { print("The vent is already clear!", 'warn'); return; }
+
+  if (!GS.rodCharged) {
+    print("You wave the plastic rod at the dust. The dust ignores you completely.", 'err');
+    print("💡 The rod is electrically NEUTRAL — it has no charge. Static electricity requires a <span class='hl-s'>transfer of charges</span>.", 'hint');
+    print("Try: <span class='hl'>RUB ROD</span> to transfer electrons and charge the rod first!", 'hint');
+    return;
+  }
+
+  if (!hasItem('plastic_rod')) {
+    print("You don't have the plastic rod!", 'err'); return;
+  }
+
+  print("✨ You hold the CHARGED plastic rod near the metallic dust...", 'desc');
+  print("The dust LEAPS toward the rod! Particles cling to it as if magnetized.", 'ok');
+  print("🌀 The vent is CLEAR! Air rushes through. The station temperature starts dropping.", 'ok');
+  print("🎓 <span class='hl-s'>Static electricity</span> at work! Opposite charges attract — the negatively charged rod attracted the neutral (slightly positive) dust particles!", 'hint');
+
+  // Reveal wire coil
+  GS.roomItems['static_chamber'].push('coil_of_wire');
+  print("🌀 Something was hidden behind the dust — a <span class='hl-m'>Wire Coil</span> tumbles out of the vent!", 'item-line');
+  print("You can now pass through to the WEST!", 'ok');
+  GS.puzzles.static = true;
+  GS.rodCharged = false; // rod neutralized
+  solvePuzzle('static');
+}
+
+// PUZZLE 4: Conductor vs Insulator
+function attemptConductor(itemId) {
+  if (GS.puzzles.conductor) { print("The panel is already bridged. System active!", 'warn'); return; }
+
+  const conductors = ['copper_wire', 'copper_coin', 'iron_nail'];
+  const insulators = ['rubber_gloves', 'plastic_rod'];
+
+  if (insulators.includes(itemId)) {
+    const name = ITEM_DATA[itemId].name;
+    if (itemId === 'rubber_gloves') {
+      print("You hold the rubber glove against the wires. Absolutely nothing happens.", 'err');
+      print("💡 Rubber is an <span class='hl-i'>INSULATOR</span> — great for protecting you from shocks, but it BLOCKS electricity from flowing!", 'hint');
+      print("You need a <span class='hl-c'>CONDUCTOR</span> — something metallic — to bridge the gap.", 'hint');
+    } else {
+      print("You place the " + name + " across the gap. The wires remain disconnected.", 'err');
+      print("💡 Plastic is an <span class='hl-i'>INSULATOR</span> — electrons cannot flow through it. Try something metallic!", 'hint');
+    }
+    return;
+  }
+
+  if (conductors.includes(itemId)) {
+    const name = ITEM_DATA[itemId].name;
+    print("🔧 You carefully place the " + name + " across the gap in the floor panel...", 'desc');
+    print("⚡ <span class='hl-c'>Current flows!</span> Copper completes the circuit across the gap!", 'ok');
+    print("CLUNK! The north hatch unlocks and swings open!", 'ok');
+    print("🎓 <span class='hl-c'>Conductors</span> (metals like copper, iron) allow electrons to flow freely. That's what closed the circuit!", 'hint');
+    GS.puzzles.conductor = true;
+    // consume item
+    GS.inventory = GS.inventory.filter(i => i !== itemId);
+    solvePuzzle('conductor');
+    updateSidebar();
+    updateStats();
+    return;
+  }
+
+  print("The " + ITEM_DATA[itemId].name + " can't bridge the gap. You need a metallic conductor!", 'err');
+}
+
+// PUZZLE 5: Electromagnet
+function attemptElectromagnet() {
+  if (GS.puzzles.electromagnet) { print("The door is already open!", 'warn'); return; }
+
+  const hasNail = hasItem('iron_nail');
+  const hasCoil = hasItem('coil_of_wire');
+  const hasBat1 = hasItem('battery');
+  const hasBat2 = hasItem('extra_battery');
+
+  if (!hasNail) {
+    print("❌ You're missing an iron nail. (Check the Engine Bay.)", 'err'); return;
+  }
+  if (!hasCoil) {
+    print("❌ You're missing a wire coil. (Clear the vent in the Static Chamber.)", 'err'); return;
+  }
+  if (!hasBat1 && !hasBat2) {
+    print("❌ You have no batteries! Find them in the Storage Bay and Engine Bay.", 'err'); return;
+  }
+
+  if (hasBat1 && !hasBat2) {
+    print("🔧 You wrap the coil around the nail and connect one battery...", 'desc');
+    print("The nail becomes weakly magnetic. You feel it tug slightly at the door.", 'warn');
+    print("💥 CLANK! The door barely moves — not enough magnetic force!", 'err');
+    print("💡 The electromagnet is too WEAK! More batteries = more current = stronger magnet!", 'hint');
+    print("You need BOTH batteries. Find the extra battery (Engine Bay) and try again!", 'hint');
+    return;
+  }
+
+  // Both batteries — success!
+  print("🔧 You wrap the wire coil tightly around the iron nail — 20 coils of wire!", 'desc');
+  print("⚡ You connect BOTH batteries in sequence. Current surges through the coils.", 'info');
+  print("🧲 The iron nail becomes a POWERFUL ELECTROMAGNET — you can feel it pulling at everything metal!", 'ok');
+  print("💥 BOOM! The blast door FLIES OPEN, slamming into the wall!", 'ok');
+  print("🎓 <span class='hl-m'>Electromagnet</span> science: 20 coils + 2 batteries = strong magnetic field. More coils AND more current = stronger magnet!", 'hint');
+  GS.puzzles.electromagnet = true;
+  // consume both batteries
+  GS.inventory = GS.inventory.filter(i => i !== 'battery' && i !== 'extra_battery' && i !== 'iron_nail' && i !== 'coil_of_wire');
+  solvePuzzle('electromagnet');
+  updateSidebar();
+  updateStats();
+}
+
+// PUZZLE 6: Bridge Quiz
+const QUIZ_QUESTIONS = [
+  {
+    q: "🔌 Which type of circuit allows electricity to flow?",
+    opts: [
+      "A) An OPEN circuit — one with a gap or break",
+      "B) A CLOSED circuit — a complete loop with no breaks",
+      "C) A HALF circuit — only when the switch is sideways",
+      "D) Either one — electricity flows in any circuit",
+    ],
+    correct: 1,
+    feedback_ok: "✅ Correct! A CLOSED circuit has a complete, unbroken path for electrons to travel. An OPEN circuit has a gap, so current cannot flow.",
+    feedback_bad: "❌ Not quite! A CLOSED circuit is a complete loop — electrons can travel all the way around. An OPEN circuit has a break, so electrons stop moving.",
+  },
+  {
+    q: "🔩 Which of these is the BEST conductor of electricity?",
+    opts: [
+      "A) Rubber — very flexible and springy",
+      "B) Plastic — lightweight and cheap",
+      "C) Copper — used in most electrical wires",
+      "D) Wood — natural and strong",
+    ],
+    correct: 2,
+    feedback_ok: "✅ Copper it is! Copper is one of the best conductors — electrons move through it very easily. That's why most electrical wires are made of copper!",
+    feedback_bad: "❌ Rubber, plastic, and wood are all INSULATORS — they block electricity. Copper is the conductor! Metals generally allow electrons to flow freely.",
+  },
+  {
+    q: "🧲 How can you make an electromagnet STRONGER?",
+    opts: [
+      "A) Use fewer coils of wire and fewer batteries",
+      "B) Replace the iron nail with a plastic rod",
+      "C) Add MORE coils of wire AND use MORE batteries",
+      "D) Disconnect one battery and add extra plastic",
+    ],
+    correct: 2,
+    feedback_ok: "✅ Brilliant! More coils = stronger magnetic field. More batteries = more current = stronger magnet. Both together = maximum power!",
+    feedback_bad: "❌ More is more! To strengthen an electromagnet, add MORE coils (more loops = stronger field) AND more batteries (more current = stronger magnet). Plastic doesn't conduct!",
+  },
+];
+
+let quizState = { q: 0, score: 0, answered: false };
+
+function cmdBridgeQuiz() {
+  if (GS.puzzles.bridge) { print("The computer is already rebooted. Escape pods are ready!", 'warn'); return; }
+  print("🖥️ Accessing emergency reboot sequence...", 'info');
+  quizState = { q: 0, score: 0, answered: false };
+  openQuiz();
+}
+
+function openQuiz() {
+  document.getElementById('quizOverlay').classList.add('open');
+  renderQuizQuestion();
+}
+
+function renderQuizQuestion() {
+  const qz = QUIZ_QUESTIONS[quizState.q];
+  document.getElementById('quiz-prog').textContent = 'Question ' + (quizState.q + 1) + ' of ' + QUIZ_QUESTIONS.length;
+  document.getElementById('quiz-q').innerHTML = qz.q;
+
+  const optsDiv = document.getElementById('quiz-opts');
+  optsDiv.innerHTML = '';
+  qz.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-opt';
+    btn.innerHTML = opt;
+    btn.onclick = () => answerQuiz(i);
+    optsDiv.appendChild(btn);
+  });
+
+  const fb = document.getElementById('quiz-fb');
+  fb.className = 'quiz-feedback';
+  fb.innerHTML = '';
+
+  const next = document.getElementById('quiz-next');
+  next.className = 'quiz-next';
+  next.textContent = quizState.q < QUIZ_QUESTIONS.length - 1 ? 'NEXT QUESTION →' : 'COMPLETE REBOOT ✓';
+  quizState.answered = false;
+}
+
+function answerQuiz(idx) {
+  if (quizState.answered) return;
+  quizState.answered = true;
+
+  const qz = QUIZ_QUESTIONS[quizState.q];
+  const opts = document.querySelectorAll('.quiz-opt');
+  opts.forEach(b => b.disabled = true);
+
+  const fb = document.getElementById('quiz-fb');
+  if (idx === qz.correct) {
+    opts[idx].classList.add('correct');
+    fb.innerHTML = qz.feedback_ok;
+    fb.className = 'quiz-feedback ok show';
+    quizState.score++;
+  } else {
+    opts[idx].classList.add('wrong');
+    opts[qz.correct].classList.add('correct');
+    fb.innerHTML = qz.feedback_bad;
+    fb.className = 'quiz-feedback bad show';
+  }
+
+  const next = document.getElementById('quiz-next');
+  next.className = 'quiz-next show';
+}
+
+function quizNext() {
+  quizState.q++;
+  if (quizState.q >= QUIZ_QUESTIONS.length) {
+    // Quiz complete
+    document.getElementById('quizOverlay').classList.remove('open');
+    finishBridgeQuiz();
+  } else {
+    renderQuizQuestion();
+  }
+}
+
+function finishBridgeQuiz() {
+  const score = quizState.score;
+  const total = QUIZ_QUESTIONS.length;
+  sep();
+  print("🖥️ EMERGENCY REBOOT COMPLETE", 'room-title');
+  print("Science quiz results: " + score + "/" + total + " correct", 'info');
+
+  if (score === total) {
+    print("🏆 PERFECT SCORE! The computer is fully satisfied with your scientific knowledge.", 'ok');
+    print("🔓 ESCAPE PODS UNLOCKED! The north door slides open!", 'ok');
+    print("🚀 Go NORTH to the Escape Pod Bay!", 'ok');
+    GS.puzzles.bridge = true;
+    solvePuzzle('bridge');
+  } else if (score >= 2) {
+    print("✓ Close enough! " + score + "/3 — the computer reluctantly accepts your answers.", 'ok');
+    print("🔓 ESCAPE PODS UNLOCKED! Go NORTH!", 'ok');
+    GS.puzzles.bridge = true;
+    solvePuzzle('bridge');
+  } else {
+    print("❌ Score too low (" + score + "/3). The computer demands more scientific accuracy!", 'err');
+    print("Review the Science Terminals in each room, then type USE COMPUTER to try again!", 'hint');
+    quizState = { q: 0, score: 0, answered: false };
+  }
+}
+
+// ============================================================
+// HELP, MAP, SCORE
+// ============================================================
+function cmdHelp() {
+  sep();
+  print("=== ESCAPE VOLTA — COMMAND HELP ===", 'room-title');
+  print("MOVEMENT:", 'info');
+  print("  go north/south/east/west  (or just: n, s, e, w)", 'desc');
+  print("ITEMS:", 'info');
+  print("  take [item]  &nbsp; drop [item]  &nbsp; inventory (or i)", 'desc');
+  print("  wear [item]  (e.g. wear gloves)", 'desc');
+  print("  rub [item]   (e.g. rub rod)", 'desc');
+  print("INTERACTION:", 'info');
+  print("  look / look around  &nbsp; examine [thing]", 'desc');
+  print("  use [item] on [target]  (e.g. use battery on motor)", 'desc');
+  print("  connect [item] to [target]  (e.g. connect wire to panel)", 'desc');
+  print("  build electromagnet  (in Electromagnet Lab)", 'desc');
+  print("  use terminal  (in rooms with Science Terminals)", 'desc');
+  print("  use computer  (on Control Bridge)", 'desc');
+  print("OTHER:", 'info');
+  print("  map  &nbsp; help  &nbsp; score", 'desc');
+  sep();
+}
+
+function cmdMap() {
+  sep();
+  print("=== STATION VOLTA — MAP ===", 'room-title');
+  print("", '');
+  const solved = GS.puzzles;
+  print("         [🚀 ESCAPE POD] ← goal!", 'desc');
+  print("               ↑ " + (solved.bridge ? '🔓' : '🔒'), 'desc');
+  print("        [🖥️ CONTROL BRIDGE]", 'desc');
+  print("               ↑ " + (solved.electromagnet ? '🔓' : '🔒'), 'desc');
+  print("       [🧲 ELECTROMAGNET LAB]", 'desc');
+  print("               ↑ " + (solved.conductor ? '🔓' : '🔒'), 'desc');
+  print("        [🔬 MATERIALS LAB] ← [✨ STATIC CHAMBER]", 'desc');
+  print("                                    ↑ " + (solved.circuit ? '🔓' : '🔒'), 'desc');
+  print("                          [⚡ POWER CORE] → [🔧 ENGINE BAY]", 'desc');
+  print("                                ↑", 'desc');
+  print("                          [🚪 AIRLOCK] → [📦 STORAGE BAY]", 'desc');
+  print("", '');
+  print("🔒 = locked &nbsp; 🔓 = unlocked &nbsp; ★ = current room: " + ROOM_DATA[GS.room].name, 'info');
+  sep();
+}
+
+function cmdScore() {
+  const count = Object.values(GS.puzzles).filter(v => v).length;
+  sep();
+  print("Moves made: " + GS.moveCount, 'info');
+  print("Puzzles solved: " + count + "/6", 'info');
+  print("Inventory items: " + GS.inventory.length, 'info');
+  sep();
+}
+
+// ============================================================
+// R/R MODAL
+// ============================================================
+function openRR(key) {
+  const t = TERMINALS[key];
+  if (!t) return;
+  document.getElementById('rr-title').textContent = t.title;
+  document.getElementById('rr-sub').textContent = t.subtitle;
+  document.getElementById('rr-badge').textContent = t.badge;
+  document.getElementById('rr-content').innerHTML = t.html;
+  document.getElementById('rrOverlay').classList.add('open');
+  GS.terminalsRead[key] = true;
+
+  // restore saved answers
+  const saved = GS.rrSaved[key] || {};
+  for (let id in saved) {
+    const ta = document.getElementById(id);
+    if (ta) { ta.value = saved[id]; }
+  }
+}
+
+function closeRR() {
+  const overlay = document.getElementById('rrOverlay');
+  overlay.classList.remove('open');
+
+  // Check if any response was saved
+  const hasResponse = Object.keys(GS.rrSaved).length > 0;
+  if (hasResponse) {
+    print("📡 Terminal closed. Your science notes are saved!", 'info');
+    // Give contextual hint based on current room
+    giveTerminalHint();
+  } else {
+    print("📡 Terminal closed. (Tip: write responses and click Save Response for hints!)", 'info');
+  }
+}
+
+function giveTerminalHint() {
+  const room = ROOM_DATA[GS.room];
+  const hints = {
+    circuit: "💡 HINT: You need a COPPER WIRE (conductor) to close the circuit. First WEAR GLOVES (insulator = safety), then CONNECT WIRE TO PANEL.",
+    energy: "💡 HINT: Connect a battery to the motor! Try: USE BATTERY ON MOTOR",
+    static: "💡 HINT: First RUB the plastic rod to charge it with static electricity, then USE ROD ON DUST",
+    conductor: "💡 HINT: Bridge the gap with a CONDUCTOR. The copper coin on the workbench is perfect! USE COPPER COIN ON GAP",
+    electromagnet: "💡 HINT: Make sure you have: iron nail + wire coil + BOTH batteries. Then type: BUILD ELECTROMAGNET",
+  };
+  const hint = hints[room.terminalKey];
+  if (hint) print(hint, 'hint');
+}
+
+function saveRR(id, btn) {
+  const ta = document.getElementById(id);
+  if (!ta || !ta.value.trim()) {
+    ta.style.borderColor = '#f87171';
+    setTimeout(() => ta.style.borderColor = '', 1500);
+    return;
+  }
+  const key = ROOM_DATA[GS.room]?.terminalKey || 'general';
+  if (!GS.rrSaved[key]) GS.rrSaved[key] = {};
+  GS.rrSaved[key][id] = ta.value;
+  btn.textContent = '✓ Saved!';
+  btn.classList.add('saved');
+  setTimeout(() => {
+    btn.textContent = 'Save Response';
+    btn.classList.remove('saved');
+  }, 2000);
+}
+
+// ============================================================
+// SIDEBAR & STATS UPDATE
+// ============================================================
+function updateSidebar() {
+  const room = ROOM_DATA[GS.room];
+
+  // Room card
+  document.getElementById('sb-icon').textContent = room.icon;
+  document.getElementById('sb-room').textContent = room.name;
+
+  // Exits
+  const allExits = { ...room.baseExits };
+  const dirCells = { north:'ex-n', south:'ex-s', east:'ex-e', west:'ex-w' };
+  for (let dir in dirCells) {
+    const cell = document.getElementById(dirCells[dir]);
+    if (allExits[dir]) {
+      const isLocked = room.lockedExits && room.lockedExits[dir] && !GS.puzzles[getPuzzleForLock(GS.room, dir)];
+      if (isLocked) {
+        cell.className = 'exit-cell exit-locked ' + 'exit-' + dir[0];
+        cell.textContent = dir.toUpperCase() + ' 🔒';
+      } else {
+        cell.className = 'exit-cell exit-avail exit-' + dir[0];
+        cell.textContent = dir.toUpperCase();
+        cell.onclick = () => { parse('go ' + dir); };
+      }
+    } else if (room.lockedExits && room.lockedExits[dir]) {
+      const puzzleKey = getPuzzleForLock(GS.room, dir);
+      const unlocked = puzzleKey && GS.puzzles[puzzleKey];
+      if (unlocked) {
+        cell.className = 'exit-cell exit-avail exit-' + dir[0];
+        cell.textContent = dir.toUpperCase();
+        cell.onclick = () => { parse('go ' + dir); };
+      } else {
+        cell.className = 'exit-cell exit-locked exit-' + dir[0];
+        cell.textContent = dir.toUpperCase() + ' 🔒';
+      }
+    } else {
+      cell.className = 'exit-cell exit-none exit-' + dir[0];
+      cell.textContent = '—';
+      cell.onclick = null;
+    }
+  }
+
+  // Inventory list
+  const invList = document.getElementById('inv-list');
+  if (GS.inventory.length === 0) {
+    invList.innerHTML = '<div class="inv-empty">Empty — find items!</div>';
+  } else {
+    invList.innerHTML = GS.inventory.map(id => {
+      const d = ITEM_DATA[id];
+      const worn = (id === 'rubber_gloves' && GS.glovesWorn) ? ' worn' : '';
+      const charged = (id === 'plastic_rod' && GS.rodCharged) ? ' ⚡' : '';
+      return `<div class="inv-item${worn}">${d.icon} ${d.name}${charged}</div>`;
+    }).join('');
+  }
+}
+
+function updateStats() {
+  document.getElementById('stat-moves').textContent = GS.moveCount;
+  const count = Object.values(GS.puzzles).filter(v => v).length;
+  document.getElementById('stat-solved').textContent = count + '/6';
+  document.getElementById('stat-inv').textContent = GS.inventory.length;
+
+  // Danger bar
+  const pct = 8 + count * 14;
+  document.getElementById('dangerFill').style.width = pct + '%';
+  document.getElementById('dangerPct').textContent = pct + '%';
+}
+
+function solvePuzzle(key) {
+  const dot = document.getElementById('pd-' + key);
+  const name = document.getElementById('pn-' + key);
+  if (dot) { dot.classList.add('done'); }
+  if (name) { name.classList.add('done'); }
+  updateStats();
+  updateSidebar();
+}
+
+// ============================================================
+// WIN
+// ============================================================
+function triggerWin() {
+  document.getElementById('wst-moves').textContent = GS.moveCount;
+  document.getElementById('winOverlay').classList.add('open');
+}
+
+function restartGame() {
+  document.getElementById('winOverlay').classList.remove('open');
+  document.getElementById('output').innerHTML = '';
+  initGS();
+  startGame();
+}
+
+// ============================================================
+// INPUT HANDLING
+// ============================================================
+document.getElementById('cmd-btn').addEventListener('click', () => {
+  const input = document.getElementById('cmd-in');
+  const val = input.value.trim();
+  if (val) { parse(val); input.value = ''; }
+});
+document.getElementById('cmd-in').addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const input = document.getElementById('cmd-in');
+    const val = input.value.trim();
+    if (val) { parse(val); input.value = ''; }
+  }
+});
+
+// ============================================================
+// GAME START
+// ============================================================
+function startGame() {
+  sep();
+  print("🚀 ESCAPE VOLTA", 'room-title');
+  print("A Space Science Text Adventure", 'info');
+  sep();
+  blank();
+  print("⚠️  <span class='hl-p'>EMERGENCY BROADCAST — ALL PERSONNEL:</span>", 'drama');
+  print("Space Station VOLTA has been caught in the gravity well of a BLACK HOLE.", 'desc');
+  print("Escape pods are locked behind SCIENCE-BASED security protocols.", 'desc');
+  print("You are a young Explorer Cadet. You know science. This is your moment.", 'desc');
+  blank();
+  print("(P.S. Chief Engineer Okafor left helpful notes everywhere. Read them.)", 'info');
+  print("(P.P.S. Type <span class='hl'>HELP</span> for commands. Type <span class='hl'>MAP</span> for the station layout.)", 'info');
+  blank();
+  describeRoom();
+  updateSidebar();
+  updateStats();
+  document.getElementById('cmd-in').focus();
+}
+
+// INIT
+initGS();
+startGame();
+</script>
+</body>
+</html>
